@@ -1,0 +1,129 @@
+        24              0              0              0              3
+         0
+         4            OS               1              0            PP 
+ NTAU IN OLDSTA,MOLOLD =           53           1
+  THE PARAMETERS CHOSEN IN parameter.inc:
+  NDP,NRAYS,mkomp,mkompr,ifadim,NWL,mtemp,mpe=
+    100     80     27     16   1100  20000     12      1
+  NTAU,JTAU at beginning of MAINB =          53           0
+         2200.0            4.5                                          0.1
+        30             1.0E+08          300.0            1.0         0
+         1             1.5E-08         1         0         1
+        20              0              1             50                  2.
+  lops =            0    nops =            1
+             2.             0.             8.             0.             0.
+         4              5              3
+  NTAU,JTAU in MAINB =           53          53
+ NTAU,JTAU at end of MAINB =          53          53
+0* MODEL PARAMETERS
+
+                    TEFF   =     2200.          LOG (L/LSUN)=-2.74          BOLOM. MAGN.= 11.58
+                    LOG G  =      4.50          LOG (ATM/R) =-2.95          LOG (R/RSUN)=-0.53
+                    M/MSUN =       0.1
+
+                    PALFA  =      2.00
+                    PBETA  =      0.00
+                    PNY    =        8.
+                    PY     =     0.076
+
+                    NOCONV =        30
+                    MIHAL  =   20
+                    KONSG  =    0  KORT  =    1  KPP  =   50
+                    MYPNTS =         4(no use for spherical)
+                    FACPLY =     1.000
+                    XMAX   =  1.00E+08
+                    TAUM   =    300.00
+                    METBL  =         0
+
+                    NCORE  =         5
+                    KDIFF  =         3
+Abundances of H,He,C,N,O,Fe:
+  12.00  10.93   8.39   7.78   8.66   7.45
+  abund(1-17):
+   12.0000   10.9300    1.0500    1.3800    2.7000    8.3900
+    7.7800    8.6600    4.5600    7.8400    6.1700    7.5300
+    6.3700    7.5100    5.3600    7.1400    5.5000
+0IELEM AND ION = 1 OR 0 MEANS ELEMENT AND IONIZATION STAGE SHOULD BE CONSIDERED OR DISREGARDED RESP.
+0PF=2 FULL PART. FUNC., =1 PART. FUNC. TO BE INTERPOLATED IN T, =0 CONSTANT PART. FUNC.
+,ASYMPTOTIC PARTS OF PART. FUNC. FOLLOWING FISCHEL AND SPARKS 1971
+0PARTITION FUNCTIONS SUPPLIED BY THE USER
+0MOLECULES CONSIDERED BELOW T= 15000. KELVIN
+0MOLECULES CONSIDERED:  H2, H2+, H2O, OH, CH, CO, CN, C2, N2, O2, NO, NH
+0XMY=GRAMS STELLAR MATTER/GRAMS OF HYDROGEN= 1.3544     SUMH=NUMBER OF OTHER ATOMS/NUMBER OF H= 0.08606
+  We did a resolution based set of os wavenumbers
+ Total  10598 OS wavenumbers for Marcs radiative transf.
+ Approximate resolution is   2000. (corresponding to step factor10.00050)
+ OS interval:  400.0-  80004.0 cm^-1 (= 0.12- 25.0mu)
+ Marcs OS wavenumbers established:
+ There will be   10598 frequency points from wnos(1)=   400.00 to wnos(nwtot)= 80004.01 in radiative transfer
+ im,molname(im) =   1                                         C2  
+ im,molname(im) =   2                                         CaH 
+ im,molname(im) =   3                                         CH  
+ im,molname(im) =   4                                         CN  
+ im,molname(im) =   5                                         CO  
+ im,molname(im) =   6                                         CO2 
+ im,molname(im) =   7                                         FeH 
+ im,molname(im) =   8                                         H2O 
+ im,molname(im) =   9                                         HCN 
+ im,molname(im) =  10                                         MgH 
+ im,molname(im) =  11                                         NH  
+ im,molname(im) =  12                                         OH  
+ im,molname(im) =  13                                         SiH 
+ im,molname(im) =  14                                         SiO 
+ im,molname(im) =  15                                         TiH 
+ im,molname(im) =  16                                         TiO 
+ im,molname(im) =  17                                         CrH 
+ im,molname(im) =  18                                         NO  
+ im,molname(im) =  19                                         LiH 
+ im,molname(im) =  20                                         VO  
+ im,molname(im) =  21                                         ZrO 
+ im,molname(im) =  22                                         H2  
+  IM for metals =            0
+  **** NOW ITERATION            1  IS STARTING ****
+  (pk(i),i=1,33):
+  2.315841784746324E+077  0.303906169834056       2.007076321701163E+060
+   2.30315218258022       1.486821594872373E+094  0.664115709848916     
+  8.001632629107334E+270   3.76428566924774       5.950314125591194E-145
+   2.29788600267735       5.211538364818967E-235   1.25840747243864     
+  1.570619380775354E+147   187.386647587493       1.613189937998598E-082
+   21.0229948458236       1.968661490726597E+018   6.51881255257524     
+ -4.440599900515990E-016   77.1693959130190       5.439264056344921E+231
+   3.20652459313900        3.20875123569858        8.92236129173527     
+ -2.693001510046359E+264   1.27380331860683       6.731814533107743E-155
+   24.3744668218581      -1.423361841971790E+263   40.0020599530764     
+ -3.206366159684382E-093   19.1422346049008      -7.015202715213468E+109
+ 
+  FH,FC,FN,FO,FS,FK,FT,FE =   0.000000000000000E+000  2.315841784746324E+077
+ -1.727233711018889E-077 -2.681561585988519E+154  1.288229753919427E-231
+   2.00000000000000       -2.00000000000000      -2.681561585988519E+154
+  f(1),a(1,1) =   0.000000000000000E+000  0.000000000000000E+000
+  f(8),a(8,8) =   0.000000000000000E+000  0.000000000000000E+000
+
+...herefter crash'er programmet med en overflow når det er kompileret 
+med -r16. Kompileret med -r8 kører det hele vejen igennem til konvergens,
+og har på dette sted 
+  **** NOW ITERATION            1  IS STARTING ****
+  (pk(i),i=1,33):
+  5.069080290950112E-014   53.0179310338879       1.810139239077009E-008
+   1092896.66562982        49.3205528921031       1.468801281954570E-003
+  5.307041649228940E+033  5.307015733877279E+017   1611017536.93688
+  2.175907195177471E+027   11187.5323792217        451533354444.394
+  1.776838492852242E-003  1.282897384387478E+020  1.273744381915902E+023
+  6.062092035123858E+017  3.910752190656806E-010  1.329860744608477E-002
+  2.759121929153421E-005  2.199984668228254E+029  6.714845659869928E+026
+  1.712762535370146E+015   72.8104373276495       4.621829725045807E+021
+   237969.884524433        35182.8326733519       5.317181810297244E+019
+   568057.093486565        8.73583413934227        46964670729.6564
+   39546446791640.8       5.495760152829403E+018  4.619384468567393E+016
+
+  FH,FC,FN,FO,FS,FK,FT,FE =   7.872000000000001E-008  1.094000000000000E-027
+  1.700000000000000E-022  9.357000000000000E-030  7.291000000000000E-021
+  3.794000000000000E-008  1.937000000000000E-006  6.233000000000000E-013
+  f(1),a(1,1) =   0.000000000000000E+000  0.000000000000000E+000
+  f(8),a(8,8) =   0.000000000000000E+000  0.000000000000000E+000
+  (pk(i),i=1,33):
+
+H-      H BF G1 (H+H)   H2+     H2-     C I     MG I    AL I    SI I    HE I
+
+
+

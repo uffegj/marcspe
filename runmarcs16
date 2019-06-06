@@ -1,0 +1,35 @@
+#!/bin/csh
+#makeinput
+#/dev/shm/uffegj
+
+setenv CWD `pwd`
+setenv TMPDIR `mktemp -p /dev/shm/ -u`
+mkdir $TMPDIR
+
+#KOPIER MARCS TIL $TMPDIR
+# cp ..... $TMPDIR/
+# cd $TMPDIR
+# ...koer marcs...
+# mv mxmodel.dat $CWD/...
+# cd $CWD
+# rm -rf $TMPDIR 
+#
+#
+
+cp -r ./* $TMPDIR/.
+cd $TMPDIR 
+
+cp mxms7marcs1.input mxms7.input
+cp $CWD/exo/t22g45j4.arciv  arcivaaa.dat
+./GGchem/marcs16
+mv mxmodel.dat $CWD/exo/t22g45j4r16dat
+mv arcivaab.dat $CWD/exo/t22g45j4r16.arciv
+
+#mv fort.79 op.dat
+rm spectrum.dat
+rm fort.*
+#rm mxms7.input
+#rm FLUX.DAT
+#rm arcivaaa.dat
+
+rm -rf $TMPDIR

@@ -1,0 +1,210 @@
+        24              0              0              0              3
+         0
+         4            OS               1              0            PP 
+ NTAU IN OLDSTA,MOLOLD =           53           1
+  THE PARAMETERS CHOSEN IN parameter.inc:
+  NDP,NRAYS,mkomp,mkompr,ifadim,NWL,mtemp,mpe=
+    100     80     27     16   1100  20000     12      1
+  NTAU,JTAU at beginning of MAINB =          53           0
+         2200.0            4.5                                          0.1
+        30             1.0E+08          300.0            1.0         0
+         1             1.5E-08         1         0         1
+        20              0              1             50                  2.
+  lops =            0    nops =            1
+             2.             0.             8.             0.             0.
+         4              5              3
+  NTAU,JTAU in MAINB =           53          53
+ NTAU,JTAU at end of MAINB =          53          53
+0* MODEL PARAMETERS
+
+                    TEFF   =     2200.          LOG (L/LSUN)=-2.74          BOLOM. MAGN.= 11.58
+                    LOG G  =      4.50          LOG (ATM/R) =-2.95          LOG (R/RSUN)=-0.53
+                    M/MSUN =       0.1
+
+                    PALFA  =      2.00
+                    PBETA  =      0.00
+                    PNY    =        8.
+                    PY     =     0.076
+
+                    NOCONV =        30
+                    MIHAL  =   20
+                    KONSG  =    0  KORT  =    1  KPP  =   50
+                    MYPNTS =         4(no use for spherical)
+                    FACPLY =     1.000
+                    XMAX   =  1.00E+08
+                    TAUM   =    300.00
+                    METBL  =         0
+
+                    NCORE  =         5
+                    KDIFF  =         3
+Abundances of H,He,C,N,O,Fe:
+  12.00  10.93   8.39   7.78   8.66   7.45
+H He Li Be B C N O Ne Na Mg Al Si S K Ca Cr Fe Ni Ti
+  abinit(1-          48  ):
+
+ 12.00 10.93  1.05  1.38  2.70  8.39  7.78  8.66  4.56  7.84
+
+  6.17  7.53  6.37  7.51  5.36  7.14  5.50  6.18  5.08  6.31
+
+  4.90  4.00  5.64  5.39  7.45  4.92  6.23  4.21  4.60  2.88
+
+  2.56  3.25  2.60  2.92  2.58  1.42  1.92  1.51  2.24  1.12
+
+  2.17  0.88  0.13  1.11  1.09  2.00 -0.47  8.17
+
+H   He  Li  Be  B   C   N   O   F   Ne  
+
+Na  Mg  Al  Si  P   S   Cl  Ar  K   Ca  
+
+Ti  V   Cr  Mn  Fe  Co  Ni  Cu  Zn  Ga  
+
+Br  Kr  Rb  Sr  Zr  Nb  Mo  I   Xe  Cs  
+
+Ba  Hf  Ta  W   Hg  Pb  ThisD   
+INJON:iread,natms,natmsact,nelem,nel:    9  99  48  48  16
+0IELEM AND ION = 1 OR 0 MEANS ELEMENT AND IONIZATION STAGE SHOULD BE CONSIDERED OR DISREGARDED RESP.
+0PF=2 FULL PART. FUNC., =1 PART. FUNC. TO BE INTERPOLATED IN T, =0 CONSTANT PART. FUNC.
+,ASYMPTOTIC PARTS OF PART. FUNC. FOLLOWING FISCHEL AND SPARKS 1971
+0PARTITION FUNCTIONS SUPPLIED BY THE USER
+0MOLECULES CONSIDERED BELOW T= 15000. KELVIN
+0MOLECULES CONSIDERED:  H2, H2+, H2O, OH, CH, CO, CN, C2, N2, O2, NO, NH
+0XMY=GRAMS STELLAR MATTER/GRAMS OF HYDROGEN= 1.3544     SUMH=NUMBER OF OTHER ATOMS/NUMBER OF H= 0.08606
+ inabs,    NKOMP=          27
+  We did a resolution based set of os wavenumbers
+ Total  10598 OS wavenumbers for Marcs radiative transf.
+ Approximate resolution is   2000. (corresponding to step factor10.00050)
+ OS interval:  400.0-  80004.0 cm^-1 (= 0.12- 25.0mu)
+ Marcs OS scale established with  10598 wavelength points
+ from wlos(1)=  1249.94 AA to wlos(nwtot)=    25.00 microns.
+ Continuum opacity is from XL(1,2) to XL(NL(NSET),NSET):
+   813.89 AA to     38.96 microns  NSET,NL(NSET)=    8  15
+ im,molname(im) =   1                                         C2  
+ im,molname(im) =   2                                         CaH 
+ im,molname(im) =   3                                         CH  
+ im,molname(im) =   4                                         CN  
+ im,molname(im) =   5                                         CO  
+ im,molname(im) =   6                                         CO2 
+ im,molname(im) =   7                                         FeH 
+ im,molname(im) =   8                                         H2O 
+ im,molname(im) =   9                                         HCN 
+ im,molname(im) =  10                                         MgH 
+ im,molname(im) =  11                                         NH  
+ im,molname(im) =  12                                         OH  
+ im,molname(im) =  13                                         SiH 
+ im,molname(im) =  14                                         SiO 
+ im,molname(im) =  15                                         TiH 
+ im,molname(im) =  16                                         TiO 
+ im,molname(im) =  17                                         CrH 
+ im,molname(im) =  18                                         NO  
+ im,molname(im) =  19                                         LiH 
+ im,molname(im) =  20                                         VO  
+ im,molname(im) =  21                                         ZrO 
+ im,molname(im) =  22                                         H2  
+  IM for metals =            0
+  **** NOW ITERATION            1  IS STARTING ****
+  nkomp,nprova,nprovs in detabs:          27          13           3
+  the names of the abs and scat components are:
+H-  H BF(H+HH2+ H2- C I MG IAL ISI IHE IHE- H2PRHEPRELSCH-SC
+H2SCH FFH- F(H+HH2+ H2- C I MG IAL ISI IHE IHE- 
+calling opac from solve first time (of 3), to compute x(k,j), s(k,j) in 53 depths and10598 wavelengths
+ OPAC J=1 before OSTABLOOK; ntau=          53
+ t{1-ntau,3}, pe{1-ntau,3}, pg{1-ntau,3}:
+  1005.7  1059.3  1117.4  1179.1  1246.2  1320.6  1404.5  1499.4  1606.7  1730.6
+  1880.5  2076.8  2349.9  2611.9  2867.3  3112.8  3351.8  3586.3
+ 3.911E-10 2.292E-09 1.192E-08 5.714E-08 2.653E-07 1.221E-06 5.656E-06 2.626E-05
+ 1.210E-04 5.630E-04 2.741E-03 1.490E-02 8.994E-02 3.685E-01 1.226E+00 3.460E+00
+ 8.560E+00 1.910E+01
+ 3.870E+02 9.241E+02 1.851E+03 3.509E+03 6.581E+03 1.235E+04 2.318E+04 4.354E+04
+ 8.191E+04 1.544E+05 2.911E+05 5.437E+05 9.782E+05 1.707E+06 2.868E+06 4.642E+06
+ 7.317E+06 1.134E+07
+  C2    CaH   CH    CN    CO    CO2   FeH   H2O   HCN   MgH   NH    OH  
+  SiH   SiO   TiH   TiO   CrH   NO    LiH   VO    ZrO   H2  
+ time when starting OSTABLOOK:
+ Total time spent:  0.24 sec. Added time:  0.24 sec.
+ total and accumulated time processing OS tables:
+ Total time spent: 11.43 sec. Added time: 11.20 sec.
+ OPAC J=1 after OSTABLOOK; ntau=          53
+  1005.7  1059.3  1117.4  1179.1  1246.2  1320.6  1404.5  1499.4  1606.7  1730.6
+  1880.5  2076.8  2349.9  2611.9  2867.3  3112.8  3351.8  3586.3
+ 3.911E-10 2.292E-09 1.192E-08 5.714E-08 2.653E-07 1.221E-06 5.656E-06 2.626E-05
+ 1.210E-04 5.630E-04 2.741E-03 1.490E-02 8.994E-02 3.685E-01 1.226E+00 3.460E+00
+ 8.560E+00 1.910E+01
+ 3.870E+02 9.241E+02 1.851E+03 3.509E+03 6.581E+03 1.235E+04 2.318E+04 4.354E+04
+ 8.191E+04 1.544E+05 2.911E+05 5.437E+05 9.782E+05 1.707E+06 2.868E+06 4.642E+06
+ 7.317E+06 1.134E+07
+ with the result that rossop(k=1)=   3356.04289503013     
+ time when starting OSTABLOOK:
+ Total time spent: 11.76 sec. Added time:  0.32 sec.
+ total and accumulated time processing OS tables:
+ Total time spent: 22.93 sec. Added time: 11.17 sec.
+ time when starting OSTABLOOK:
+ Total time spent: 23.26 sec. Added time:  0.33 sec.
+ total and accumulated time processing OS tables:
+ Total time spent: 34.43 sec. Added time: 11.17 sec.
+  **** NOW AFTER CALL TO SOLVE **** 
+ pe(1)=   3.910752190656805E-010
+ ITERATION  1
+  TEMPERATURE CORRECTION WANTED BY MARCS: 
+    -0.0   -0.0   -0.0   -0.0   -0.0    0.2    0.4    0.2    0.0    0.0
+    -0.0    0.0   -0.2   -0.6   -0.4   -0.3   -0.3   -0.2   -0.2   -0.2
+    -0.1   -0.1   -0.1   -0.1   -0.1   -0.1   -0.1   -0.1   -0.1   -0.1
+    -0.1   -0.1   -0.2   -0.1   -0.2   -0.2   -0.2   -0.2   -0.1    0.0
+     0.2    0.3    0.4    0.5    0.5    0.6    0.7    0.7    0.7    0.8
+     0.8    0.9    0.9
+  TEMPERATURE CORRECTION APPLIED WAS: 
+    -0.0   -0.0   -0.0   -0.0   -0.0    0.2    0.4    0.2    0.0    0.0
+    -0.0    0.0   -0.2   -0.6   -0.4   -0.3   -0.3   -0.2   -0.2   -0.2
+    -0.1   -0.1   -0.1   -0.1   -0.1   -0.1   -0.1   -0.1   -0.1   -0.1
+    -0.1   -0.1   -0.2   -0.1   -0.2   -0.2   -0.2   -0.2   -0.1    0.0
+     0.2    0.3    0.4    0.5    0.5    0.6    0.7    0.7    0.7    0.8
+     0.8    0.9    0.9
+ pe(1)=   3.907759066438737E-010
+  **** NOW AFTER CALL TO MATRIX ***** 
+  **** NOW ITERATION            2  IS STARTING ****
+calling opac from solve first time (of 3), to compute x(k,j), s(k,j) in 53 depths and10598 wavelengths
+ time when starting OSTABLOOK:
+ Total time spent: 42.24 sec. Added time:  7.80 sec.
+ total and accumulated time processing OS tables:
+ Total time spent: 53.42 sec. Added time: 11.19 sec.
+ with the result that rossop(k=1)=   3356.64371974705     
+ time when starting OSTABLOOK:
+ Total time spent: 53.75 sec. Added time:  0.33 sec.
+ total and accumulated time processing OS tables:
+ Total time spent: 64.94 sec. Added time: 11.18 sec.
+ time when starting OSTABLOOK:
+ Total time spent: 65.27 sec. Added time:  0.33 sec.
+ total and accumulated time processing OS tables:
+ Total time spent: 76.45 sec. Added time: 11.18 sec.
+  **** NOW AFTER CALL TO SOLVE **** 
+ pe(1)=   3.907759066438737E-010
+ ITERATION  2
+  TEMPERATURE CORRECTION WANTED BY MARCS: 
+    -0.0   -0.0   -0.0   -0.0   -0.0    0.2    0.3    0.1    0.1    0.0
+     0.1    0.1    0.2    0.5    0.3    0.2    0.2    0.1    0.1    0.1
+     0.0    0.0    0.0    0.0    0.0    0.0   -0.0   -0.0   -0.0   -0.0
+    -0.0    0.0   -0.1    0.0   -0.1   -0.1   -0.0   -0.0   -0.0   -0.0
+    -0.0   -0.0    0.0    0.0    0.0    0.0    0.0   -0.0   -0.0   -0.0
+    -0.1   -0.1   -0.1
+  TEMPERATURE CORRECTION APPLIED WAS: 
+    -0.0   -0.0   -0.0   -0.0   -0.0    0.2    0.3    0.1    0.1    0.0
+     0.1    0.1    0.2    0.5    0.3    0.2    0.2    0.1    0.1    0.1
+     0.0    0.0    0.0    0.0    0.0    0.0   -0.0   -0.0   -0.0   -0.0
+    -0.0    0.0   -0.1    0.0   -0.1   -0.1   -0.0   -0.0   -0.0   -0.0
+    -0.0   -0.0    0.0    0.0    0.0    0.0    0.0   -0.0   -0.0   -0.0
+    -0.1   -0.1   -0.1
+ pe(1)=   3.905073716912055E-010
+  **** NOW AFTER CALL TO MATRIX ***** 
+ ARCHIV RECORDS WRITTEN ON LUN 22
+  **** NOW calling listmo  **** 
+ ******* in rossos (seemingly only called from listmo):
+rossos is calling opac for nwtot = 10598 wavenumbers in each depth k
+wlos(1),wlos(nwtot) =  1249.9 AA   25.0microns
+ ..if (wlos(j)<5000 or >1.e5)goto117..(ie dont rosop)
+ time when starting OSTABLOOK:
+ Total time spent: 96.83 sec. Added time: 20.38 sec.
+ total and accumulated time processing OS tables:
+ Total time spent: 108.01 sec. Added time: 11.18 sec.
+resulting in rosso(1/20/50)  =     0.00     0.00     0.31
+ Total  10598 OS wavenumbers for Marcs radiative transf.
+ Approximate resolution was   2000.
+ OS interval:  400.0-  80004.0 cm^-1 (= 0.12- 25.0mu)

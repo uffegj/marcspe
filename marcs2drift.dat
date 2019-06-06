@@ -1,0 +1,83 @@
+ !
+ ! MARCS output file to be read in by DRIFT
+ !
+ !
+ ! Model parameters: Teff, logg, mixing, overshoot:
+    2200.000        4.500        2.000        2.200
+ !
+ ! Number of atmosphere layers:
+   53
+ !
+ ! Number of elements in abundances table:
+   48
+ !
+ ! Z of the considered elements:
+    1     2     3     4     5     6     7     8
+    9    10    11    12    13    14    15    16
+   17    18    19    20    22    23    24    25
+   26    27    28    29    30    31    35    36
+   37    38    40    41    42    53    54    55
+   56    72    73    74    80    82    92    02
+ !
+ !  #        Rad [cm]        Temp [K] Pgas [dyn cm-2]     Ro [g cm-3]      g [cm s-2] v_conv [cm s-1]  Flag        mu [amu]
+    1             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+    2             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+    3             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+    4             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+    5             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+    6             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+    7             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+    8             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+    9             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   10             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   11             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   12             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   13             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   14             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   15             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   16             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   17             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   18             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   19             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   20             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   21             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   22             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   23             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   24             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   25             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   26             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   27             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   28             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   29             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   30             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   31             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   32             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   33             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   34             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   35             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   36             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   37             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   38             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   39             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   40             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   41             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   42             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   43             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   44             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   45             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   46             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   47             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   48             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   49             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   50             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   51             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   52             NaN             NaN             NaN             NaN             NaN  0.00000000E+00     F             NaN
+   53  0.20550512E+11             NaN             NaN             NaN  0.31622777E+05  0.00000000E+00     F             NaN
+ !
+ ! Initial Element abundances for each Z:
+ 12.00 10.93  1.05  1.38  2.70  8.39  7.78  8.66
+  4.56  7.84  6.17  7.53  6.37  7.51  5.36  7.14
+  5.50  6.18  5.08  6.31  4.90  4.00  5.64  5.39
+  7.45  4.92  6.23  4.21  4.60  2.88  2.56  3.25
+  2.60  2.92  2.58  1.42  1.92  1.51  2.24  1.12
+  2.17  0.88  0.13  1.11  1.09  2.00 -0.47

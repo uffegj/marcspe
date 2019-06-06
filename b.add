@@ -1,0 +1,309 @@
+ Initiation finished.
+ 
+ Iteration #            1 started
+ Total time spent:  0:00:00
+ Max corr. to T wanted was 120.6 K for iteration 1
+ Max corr. to T wanted for kort=1 was 109.4
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            2 started
+ Total time spent:  0:00:23
+ Max corr. to T wanted was2062.4 K for iteration 2
+ Max corr. to T wanted for kort=1 was 630.2
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            3 started
+ Total time spent:  0:00:47
+ Max corr. to T wanted was 143.6 K for iteration 3
+ Max corr. to T wanted for kort=1 was 138.7
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            4 started
+ Total time spent:  0:01:10
+ Max corr. to T wanted was  72.2 K for iteration 4
+ Max corr. to T wanted for kort=1 was  71.7
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            5 started
+ Total time spent:  0:01:34
+ Max corr. to T wanted was  51.1 K for iteration 5
+ Max corr. to T wanted for kort=1 was  50.9
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            6 started
+ Total time spent:  0:01:57
+ Max corr. to T wanted was4031.6 K for iteration 6
+ Max corr. to T wanted for kort=1 was 687.6
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            7 started
+ Total time spent:  0:02:21
+ Max corr. to T wanted was  41.5 K for iteration 7
+ Max corr. to T wanted for kort=1 was  41.4
+ Maximum correction applied was  41.4 for applied kort = 5
+ 
+ Iteration #            8 started
+ Total time spent:  0:02:44
+ Max corr. to T wanted was  16.0 K for iteration 8
+ Max corr. to T wanted for kort=1 was  16.0
+ Maximum correction applied was  16.0 for applied kort = 5
+ 
+ Iteration #            9 started
+ Total time spent:  0:03:07
+ Max corr. to T wanted was   6.2 K for iteration 9
+ Max corr. to T wanted for kort=1 was   6.2
+ Maximum correction applied was   6.2 for applied kort = 5
+ 
+ Iteration #           10 started
+ Total time spent:  0:03:31
+ Max corr. to T wanted was   2.2 K for iteration10
+ Max corr. to T wanted for kort=1 was   2.2
+ Maximum correction applied was   2.2 for applied kort = 5
+ 
+ Iteration #           11 started
+ Total time spent:  0:03:54
+ Max corr. to T wanted was   0.8 K for iteration11
+ Max corr. to T wanted for kort=1 was   0.8
+ Maximum correction applied was   0.8 for applied kort = 5
+ 
+ Iteration #           12 started
+ Total time spent:  0:04:18
+ Max corr. to T wanted was   0.9 K for iteration12
+ Max corr. to T wanted for kort=1 was   0.9
+ Maximum correction applied was   0.9 for applied kort = 5
+ Total time spent:  0:04:50
+ 
+ Successful termination of execution!
+ 
+cp: cannot stat `exo/t21g45j2.arciv': No such file or directory
+ Initiation finished.
+ 
+ Iteration #            1 started
+ Total time spent:  0:00:00
+ Max corr. to T wanted was 201.7 K for iteration 1
+ Max corr. to T wanted for kort=1 was 183.0
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            2 started
+ Total time spent:  0:00:23
+ Max corr. to T wanted was1572.6 K for iteration 2
+ Max corr. to T wanted for kort=1 was 595.3
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            3 started
+ Total time spent:  0:00:47
+ Max corr. to T wanted was 135.9 K for iteration 3
+ Max corr. to T wanted for kort=1 was 130.5
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            4 started
+ Total time spent:  0:01:10
+ Max corr. to T wanted was  90.5 K for iteration 4
+ Max corr. to T wanted for kort=1 was  88.8
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            5 started
+ Total time spent:  0:01:34
+ Max corr. to T wanted was  40.7 K for iteration 5
+ Max corr. to T wanted for kort=1 was  40.5
+ Maximum correction applied was  40.5 for applied kort = 5
+ 
+ Iteration #            6 started
+ Total time spent:  0:01:57
+ Max corr. to T wanted was  24.9 K for iteration 6
+ Max corr. to T wanted for kort=1 was  24.9
+ Maximum correction applied was  24.9 for applied kort = 5
+ 
+ Iteration #            7 started
+ Total time spent:  0:02:21
+ Max corr. to T wanted was  18.6 K for iteration 7
+ Max corr. to T wanted for kort=1 was  18.6
+ Maximum correction applied was  18.6 for applied kort = 5
+ 
+ Iteration #            8 started
+ Total time spent:  0:02:44
+ Max corr. to T wanted was   6.6 K for iteration 8
+ Max corr. to T wanted for kort=1 was   6.6
+ Maximum correction applied was   6.6 for applied kort = 5
+ 
+ Iteration #            9 started
+ Total time spent:  0:03:07
+ Max corr. to T wanted was   3.8 K for iteration 9
+ Max corr. to T wanted for kort=1 was   3.8
+ Maximum correction applied was   3.8 for applied kort = 5
+ 
+ Iteration #           10 started
+ Total time spent:  0:03:31
+ Max corr. to T wanted was   2.9 K for iteration10
+ Max corr. to T wanted for kort=1 was   2.9
+ Maximum correction applied was   2.9 for applied kort = 5
+ 
+ Iteration #           11 started
+ Total time spent:  0:03:54
+ Max corr. to T wanted was   1.7 K for iteration11
+ Max corr. to T wanted for kort=1 was   1.7
+ Maximum correction applied was   1.7 for applied kort = 5
+ 
+ Iteration #           12 started
+ Total time spent:  0:04:17
+ Max corr. to T wanted was   1.2 K for iteration12
+ Max corr. to T wanted for kort=1 was   1.2
+ Maximum correction applied was   1.2 for applied kort = 5
+ Total time spent:  0:04:50
+ 
+ Successful termination of execution!
+ 
+cp: cannot stat `exo/t20g45j2.arciv': No such file or directory
+ Initiation finished.
+ 
+ Iteration #            1 started
+ Total time spent:  0:00:00
+ Max corr. to T wanted was 282.3 K for iteration 1
+ Max corr. to T wanted for kort=1 was 236.9
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            2 started
+ Total time spent:  0:00:23
+ Max corr. to T wanted was1151.0 K for iteration 2
+ Max corr. to T wanted for kort=1 was 561.4
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            3 started
+ Total time spent:  0:00:47
+ Max corr. to T wanted was 232.4 K for iteration 3
+ Max corr. to T wanted for kort=1 was 202.8
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            4 started
+ Total time spent:  0:01:10
+ Max corr. to T wanted was 178.6 K for iteration 4
+ Max corr. to T wanted for kort=1 was 166.5
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            5 started
+ Total time spent:  0:01:34
+ error    209.284361680935       convergence criterium   1.000000047497451E-003
+ Max corr. to T wanted was 126.1 K for iteration 5
+ Max corr. to T wanted for kort=1 was 121.4
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            6 started
+ Total time spent:  0:01:57
+ Max corr. to T wanted was 668.4 K for iteration 6
+ Max corr. to T wanted for kort=1 was 209.1
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            7 started
+ Total time spent:  0:02:21
+ Max corr. to T wanted was5299.7 K for iteration 7
+ Max corr. to T wanted for kort=1 was 663.3
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            8 started
+ Total time spent:  0:02:44
+ Max corr. to T wanted was  56.6 K for iteration 8
+ Max corr. to T wanted for kort=1 was  55.1
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #            9 started
+ Total time spent:  0:03:08
+ Max corr. to T wanted was  40.5 K for iteration 9
+ Max corr. to T wanted for kort=1 was  40.4
+ Maximum correction applied was  40.4 for applied kort = 5
+ 
+ Iteration #           10 started
+ Total time spent:  0:03:31
+ Max corr. to T wanted was 250.1 K for iteration10
+ Max corr. to T wanted for kort=1 was 180.1
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           11 started
+ Total time spent:  0:03:54
+ Max corr. to T wanted was****** K for iteration11
+ Max corr. to T wanted for kort=1 was 662.9
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           12 started
+ Total time spent:  0:04:18
+ Max corr. to T wanted was1468.5 K for iteration12
+ Max corr. to T wanted for kort=1 was 394.9
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           13 started
+ Total time spent:  0:04:41
+ Max corr. to T wanted was 139.4 K for iteration13
+ Max corr. to T wanted for kort=1 was 116.9
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           14 started
+ Total time spent:  0:05:05
+ Max corr. to T wanted was  43.2 K for iteration14
+ Max corr. to T wanted for kort=1 was  42.0
+ Maximum correction applied was  42.0 for applied kort = 5
+ 
+ Iteration #           15 started
+ Total time spent:  0:05:28
+ Max corr. to T wanted was  60.8 K for iteration15
+ Max corr. to T wanted for kort=1 was  58.3
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           16 started
+ Total time spent:  0:05:52
+ Max corr. to T wanted was 549.9 K for iteration16
+ Max corr. to T wanted for kort=1 was 275.7
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           17 started
+ Total time spent:  0:06:15
+ Max corr. to T wanted was 170.5 K for iteration17
+ Max corr. to T wanted for kort=1 was 129.3
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           18 started
+ Total time spent:  0:06:39
+ Max corr. to T wanted was  64.6 K for iteration18
+ Max corr. to T wanted for kort=1 was  61.1
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           19 started
+ Total time spent:  0:07:02
+ Max corr. to T wanted was 413.6 K for iteration19
+ Max corr. to T wanted for kort=1 was 173.6
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           20 started
+ Total time spent:  0:07:26
+ Max corr. to T wanted was 558.7 K for iteration20
+ Max corr. to T wanted for kort=1 was 427.3
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           21 started
+ Total time spent:  0:07:50
+ error    297.192703276948       convergence criterium   1.000000047497451E-003
+ error    302.579385325125       convergence criterium   1.000000047497451E-003
+ error    297.148822122217       convergence criterium   1.000000047497451E-003
+ Max corr. to T wanted was 250.3 K for iteration21
+ Max corr. to T wanted for kort=1 was 166.5
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           22 started
+ Total time spent:  0:08:14
+ Max corr. to T wanted was 114.5 K for iteration22
+ Max corr. to T wanted for kort=1 was 101.8
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           23 started
+ Total time spent:  0:08:37
+ Max corr. to T wanted was  79.3 K for iteration23
+ Max corr. to T wanted for kort=1 was  74.7
+ Maximum correction applied was  50.0 for applied kort = 5
+ 
+ Iteration #           24 started
+ Total time spent:  0:09:01
+ Max corr. to T wanted was  40.6 K for iteration24
+ Max corr. to T wanted for kort=1 was  40.0
+ Maximum correction applied was  40.0 for applied kort = 5
+ Total time spent:  0:09:34
+ 
+ Successful termination of execution!
+ 

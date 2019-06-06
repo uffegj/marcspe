@@ -1,0 +1,80 @@
+#makeinput
+
+cp mxms7marcs1.input mxms7.input
+
+cp exo/t25g45j2.arciv  arcivaaa.dat
+./GGchem/marcs_test
+mv mxmodel.dat exo/t24g45j2.dat
+mv arcivaab.dat exo/t24g45j2.arciv
+#mv fort.79 op.dat
+rm spectrum.dat
+rm fort.*
+#rm mxms7.input
+#rm FLUX.DAT
+#rm arcivaaa.dat
+
+cp mxms7gg1.input mxms7.input
+
+cp exo/t25g45j4.arciv  arcivaaa.dat
+./GGchem/marcs_test
+mv mxmodel.dat exo/t24g45j4.dat
+mv arcivaab.dat exo/t24g45j4.arciv
+#mv fort.79 op.dat
+rm spectrum.dat
+rm fort.*
+#rm mxms7.input
+#rm FLUX.DAT
+#rm arcivaaa.dat
+
+cp mxms7marcs2.input mxms7.input
+
+cp exo/t24g45j2.arciv  arcivaaa.dat
+./GGchem/marcs_test
+mv mxmodel.dat exo/t23g45j2.dat
+mv arcivaab.dat exo/t23g45j2.arciv
+#mv fort.79 op.dat
+rm spectrum.dat
+rm fort.*
+#rm mxms7.input
+#rm FLUX.DAT
+#rm arcivaaa.dat
+
+cp mxms7gg2.input mxms7.input
+
+cp exo/t24g45j4.arciv  arcivaaa.dat
+./GGchem/marcs_test
+mv mxmodel.dat exo/t23g45j4.dat
+mv arcivaab.dat exo/t23g45j4.arciv
+#mv fort.79 op.dat
+rm spectrum.dat
+rm fort.*
+#rm mxms7.input
+#rm FLUX.DAT
+#rm arcivaaa.dat
+
+cp mxms7marcs3.input mxms7.input
+
+cp exo/t23g45j2.arciv  arcivaaa.dat
+./GGchem/marcs_test
+mv mxmodel.dat exo/t22g45j2.dat
+mv arcivaab.dat exo/t22g45j2.arciv
+#mv fort.79 op.dat
+rm spectrum.dat
+rm fort.*
+#rm mxms7.input
+#rm FLUX.DAT
+#rm arcivaaa.dat
+
+cp mxms7gg3.input mxms7.input
+
+cp exo/t23g45j4.arciv  arcivaaa.dat
+./GGchem/marcs_test
+mv mxmodel.dat exo/t22g45j4.dat
+mv arcivaab.dat exo/t22g45j4.arciv
+#mv fort.79 op.dat
+rm spectrum.dat
+rm fort.*
+#rm mxms7.input
+#rm FLUX.DAT
+#rm arcivaaa.dat
+

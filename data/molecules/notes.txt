@@ -1,0 +1,85 @@
+
+2008: C2H2, VO, ZrO
+
+
+FeH_Wende:
+Wende et al., 2010		Note: ok (extrapolated pf 100-900K)
+
+CrH_Burrows:
+Burrows et al., 2002		Notes: ok (extrapolated pf 3100-4000K)
+
+TiH_Burrows:
+Burrows et al., 2005		Notes: ok (extrapolated pf 100-1100K)
+
+SiH_Kurucz:
+
+Kurucz et al. 2010		Notes: ok (calculated pf myself)
+
+BeH_Yadin:
+Yadin et al, 2012		Notes: ok (extrapolated pf 3100-4000K)
+
+CaH_YadinWeck:
+Yadin et al, 2012		Notes: ok (extrapolated pf 3100-4000K)
+Weck et al, 2003		Notes: ok (pf from Yadin)
+
+MgH_YadinGharibNezhad:
+Yadin et al, 2012		Notes: ok (pf from GharibNezhad)
+GharibNezhad et al, 2013	Notes: ok (extrapolated pf 3100-4000K)
+
+LiH_Coppola:
+Coppola et al, 2011		Notes: ok
+======================================================================
+
+======================================================================
+CH_Masseron:
+Masseron et al. 2014		Note: ok
+
+NH
+Brooke et al. 2015		Note: ok (extrapolated pf 3000K-4000K)
+Kurucz, 1998			Note: ok (used pf from Brooke)
+
+OH
+Kurucz, 2007			Note: ok
+======================================================================
+
+======================================================================
+SiO:
+Barton, 2013			Note: ok
+Kurucz, 2010			Note: ok (used pf from Barton)
+
+TiO_Schwenke:
+Schwenke, 1998			Note: ok
+======================================================================
+
+======================================================================
+CO_Kurucz:
+Kurucz, 2014			Note: ok
+
+NO_HITEMP:
+Rothman, 2010			Note: ok
+======================================================================
+
+======================================================================
+H2_Kurucz:
+Kurucz, 2010			Note: ok (calculated pf myself)
+
+C2_KuruczBrooke:
+Kurucz, 2010			Note: ok (pf from Brooke)
+Brooke, 2013			Note: ok (extrapolated pf 3000-4000K)
+
+CN_Brooke:
+Brook, 2014			Note: ok (extrapolated pf 3000-4000K)
+======================================================================
+
+======================================================================
+C3_SCAN:
+Jørgensen, 1989			Note: NOT OK (exrapolated pf 500-631K)
+
+CO2_HITEMP:
+Rothman et al, 2010		Note: ok (used pf from CDSD-4000)
+
+H2O_SCAN:
+Jørgensen, 2001			Note: ok
+
+HCN_Harris:
+Harris et al, 2006 & 2008	Note: ok

@@ -1,0 +1,102 @@
+
+Description of the opacity calculation:
+
+SOLVE is for each depth layer k calling OPAC(J,X,S) for each 
+OS-wavelwngth J to compute 
+the absorption and scattering coefficients X(J), S(J).
+For the given (T,Pe) the opacity is computed for (T,Pe), (T+dT,Pe), 
+and (T,Pe+dPe) and temporarily stored in fort.11, fort.12, and fort.14 
+in order to compute the derivative of the opacity relative T and Pe.
+
+ostablook is called from OPAC with j=1 only (i.e. for first wavelength 
+number of the NLP (=20) in the XL array).
+ostablook computes the line absorption coefficient conos(j) for all
+j = 1,nwtot (i.e. all OS-wavelengths, typically around 10,000 wavelengths)
+in this one call.
+conos(j) is in OPAC added to the continuums opacity x(j) (and which
+sums up to sumx(k), k being all depth layers).
+If idust=1, then opac also adds the dust absorption and scattering 
+coefficients to x(k) and s(k).  All coefficients are normalized to 
+the standard Rosseland absorption coefficient xkapr(k).
+In the end opac(j,x,s) enters j (the os-wavelength number) and returns
+the absorption coefficient (x(k),k=1,ndp) and scattering coefficient
+(s(k),k=1,ndp) in all depth layers for this wavelength wlos(j).
+
+
+OPAC is called from solve (3 times; for t,pe; t+dt,pe; t,pe+dpe)
+where the opacities used in solve is computed
+
+OPAC is also called from subroutine ROSSOS (but only from listmo)
+
+TRYCK calculated ross-opacity from function rossop
+
+OPAC administrates the continuum opacity computation by calling ABSKO 
+for each OS-wavenumber J and interpolating the resulting 
+continuum absorption (X(J)) and scattering (S(J)) to 
+the corresponding OS-wavewlength (and adding the result to CONOS).
+
+SUBROUTINE ABSKO(NEWT,NT,TSKAL,PESKAL,ISETA,J,ABSK,SPRID)
+is called (basically only) from OPAC (plus from rossop and for archiving
+spectrum informations when listing arciv files).
+
+ ABSKO calls subroutine JON
+Pe can also be computed by calling PEMAKE(T,PE,PG,PEX) which calls JON.
+(or by taet(t,pe,pg,ro,e) which also just calls JON or by calling
+subroutine termo or termon which computes p,ro,cp,cv,tgrad,q,u2 from 
+t,pe,p_rad).
+
+After the call to JON and some details, the actual continuum absorption 
+coeficient is computed by call to DETABS, which holds the continuum 
+abs.coef. formulas,
+computes the different contributions, and adds them up.
+Some of the components depend on the electron pressure, e.g. the opacity
+of H- (depends on AB(1) and AB(18)), electron scattering, He-, H2-, 
+
+  When including GGchem we need to investigate whether the number of electrons
+(Pe(j)) used to compute the continuum opacities are consistent with the 
+number computed in GGchem.
+Before calling init_ggchem or any of the other chemical equilibrium routines,
+JON is called (from OSTABLOOK for each depth layer).
+dust_opac also calls JON. 
+
+JON computes Pe by considering ionization state 1-4 for all NEL (set to 16 in
+injon)) elements 
+that can be ionized, summing up the electrons that comes from each of them.
+xnel = Pe/(k_bolz*T) is electron number density (#electrons pr cm3).
+
+DRIFT only uses neutral molecules to compute dust particles, which should 
+not affect the electron pressure. In Diana's implementation MARCS is called 
+a last time after DRIFT to compute the opacities of the gas, which will 
+automatically introduce also the right continuums opacities.
+
+  
+Abundances are read in from elabund.dat that can include up to NATMS elements.
+NATMS is set in the parameter.inc, for the moment to 99 (May 2019)
+Atomic weights, ionisation data etc are read in from jonabs.dat in injon.
+The call of INJON takes place by calling INITJN(io) der kalder INJON (og sætter
+read til unit9 = jonabs.dat).
+Many statements are limited to dimension NEL=16; it should be changed to NATMS.
+INJON first isets NEL=16 and then reads the 16 names from jonabs.dat 
+(remark that the names are 
+read in the format of 16 character variables of length 4, but transfered in 
+commonblock CI1 as IEL(1-16), i.e. interger*4).
+Then abinit(1-<natms) is read in from elabund.dat, counting also how many 
+elements, nelem (or natmsact), are given in elabund.dat. The element number 
+(from the periodic table) kelem(), abinit(), and nelem are stored in 
+commonblock cabinit.
+
+NMET og NU er defineret (i injon) til at være 16 og 0, hvilket påvirker 
+loop 22 strukturen på en måde som der også skal tages højde for hvis 
+nel=16 ændres til noget andet.   
+ 
+The input values from the rest of jonabs.dat are read in in detabs,
+which is called twice from ABSKO (only).
+
+The values of Pe, T, Pg (i.e. Pp, Pr, Pt) are stored in commonblock STATEC, 
+and these are at any given iteration the values in use. Pg = pp-pr-pt
+They are not changes before and after call to OSTABLOOK (and the chemical 
+equilibria) and not during the computation of dOP/dT etc in SOLVE.
+PRESAMO(33) are stored in commonblock CARC3
+
+
+

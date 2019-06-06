@@ -1,0 +1,302 @@
+elements affected by dust formation
+===================================
+6
+Mg 
+Si 
+Ti  
+O
+Fe
+Al
+
+involved gas species
+====================
+25
+t t 0 H
+t t 0 Mg
+t t 0 Fe
+t t 0 Al
+t t 0 Ti
+f t 2 TIO
+ 1 Ti
+ 1 O
+f t 2 TIO2
+ 1 Ti
+ 2 O
+f t 2 TIS
+ 1 Ti
+ 1 S
+f t 2 SIO
+ 1 Si
+ 1 O
+f t 2 SIO2
+ 1 Si
+ 2 O
+f t 2 SIS
+ 1 Si
+ 1 S
+f f 2 H2O
+ 2 H
+ 1 O
+f f 1 H2
+ 2 H
+f t 2 H2S
+ 2 H
+ 1 S
+f t 2 MGO
+ 1 Mg
+ 1 O
+f t 3 MGOH
+ 1 Mg
+ 1 O
+ 1 H
+f t 3 MG(OH)2
+ 1 Mg
+ 2 O
+ 2 H
+f t 2 FEO
+ 1 Fe
+ 1 O
+f t 2 FES
+ 1 Fe
+ 1 S
+f t 3 FE(OH)2
+ 1 Fe
+ 2 O
+ 2 H
+f t 3 ALOH
+ 1 Al
+ 1 O
+ 1 H
+f t 2 ALH
+ 1 Al
+ 1 H
+f t 2 AL2O
+ 2 Al
+ 1 O
+f t 2 ALS
+ 1 Al
+ 1 S
+f t 3 ALO2H
+ 1 Al
+ 2 O
+ 1 H
+
+dust species
+============
+7
+TiO2[s]      
+4.23
+2
+ 1 Ti
+ 2 O
+Mg2SiO4[s]
+3.21
+3
+ 2 Mg
+ 1 Si
+ 4 O
+SiO2[s]
+2.6480
+2
+ 1 Si
+ 2 O
+Fe[s]
+7.87
+1 
+ 1 Fe
+Al2O3[s]
+3.97
+2
+ 2 Al
+ 3 O
+MgO[s]
+3.6
+2
+ 1 Mg
+ 1 O
+MgSiO3[s]
+3.19
+3
+ 1 Mg
+ 1 Si
+ 3 O
+
+nucleation
+==========
+1
+TiO2
+2
+ 1 Ti
+ 2 O
+
+growth reactions : alle Buchstaben gross in MolekNamen!!
+================
+32
+2 2
+ 1 Ti
+ 2 H2O
+ 1 TiO2[s]
+ 2 H2
+1 1
+ 1 TIO2
+ 1 TiO2[s]
+2 2
+ 1 TIO
+ 1 H2O
+ 1 TiO2[s]
+ 1 H2
+2 3
+ 1 TIS
+ 2 H2O
+ 1 TiO2[s]
+ 1 H2S
+ 1 H2
+3 2
+ 2 Mg
+ 1 SIO
+ 3 H2O
+ 1 Mg2SiO4[s]
+ 3 H2
+3 2
+ 2 MGOH
+ 1 SIO
+ 1 H2O
+ 1 Mg2SiO4[s]
+ 2 H2
+2 3
+ 2 MG(OH)2 
+ 1 SIO 
+ 1 Mg2SiO4[s] 
+ 1 H2O
+ 1 H2 
+3 3
+ 2 Mg
+ 1 SIS
+ 4 H2O
+ 1 Mg2SiO4[s]
+ 1 H2S
+ 3 H2
+3 3
+ 2 MGOH
+ 1 SIS
+ 2 H2O
+ 1 Mg2SiO4[s]
+ 1 H2S
+ 2 H2
+2 3
+ 2 MG(OH)2 
+ 1 SIS 
+ 1 Mg2SiO4[s] 
+ 1 H2
+ 1 H2S 
+1 1
+ 1 SIO2
+ 1 SiO2[s] 
+2 2
+ 1 SIO 
+ 1 H2O 
+ 1 SiO2[s] 
+ 1 H2
+2 3
+ 1 SIS 
+ 2 H2O 
+ 1 SiO2[s] 
+ 1 H2
+ 1 H2S
+1 1
+ 1 Fe
+ 1 Fe[s]
+2 2
+ 1 FEO
+ 1 H2
+ 1 Fe[s]
+ 1 H2O
+2 2
+ 1 FES
+ 1 H2
+ 1 Fe[s]
+ 1 H2S
+2 2 
+ 1 FE(OH)2
+ 1 H2
+ 1 Fe[s]
+ 2 H2O
+2 2
+ 2 ALOH
+ 1 H2O
+ 1 Al2O3[s]
+ 2 H2
+2 2
+ 2 ALH
+ 3 H2O
+ 1 Al2O3[s]
+ 4 H2
+2 2
+ 1 AL2O
+ 2 H2O
+ 1 Al2O3[s]
+ 2 H2
+2 3
+ 2 ALS
+ 3 H2O
+ 1 Al2O3[s]
+ 2 H2S
+ 1 H2
+1 2
+ 2 ALO2H
+ 1 Al2O3[s]
+ 1 H2O
+1 1
+ 1 MGO
+ 1 MgO[s]
+2 2
+ 1 Mg
+ 1 H2O
+ 1 MgO[s]
+ 1 H2
+1 2
+ 2 MGOH
+ 2 MgO[s]
+ 1 H2
+1 2
+ 1 MG(OH)2
+ 1 MgO[s]
+ 1 H2O
+3 2
+ 1 Mg
+ 1 SIO
+ 2 H2O
+ 1 MgSiO3[s]
+ 2 H2
+3 3
+ 1 Mg
+ 1 SIS
+ 3 H2O
+ 1 MgSiO3[s]
+ 1 H2S
+ 2 H2
+3 2
+ 2 MGOH
+ 2 SIO
+ 2 H2O
+ 2 MgSiO3[s]
+ 3 H2
+3 3
+ 2 MGOH
+ 2 SIS
+ 4 H2O
+ 2 MgSiO3[s]
+ 2 H2S
+ 3 H2
+2 2
+ 1 MG(OH)2
+ 1 SIO
+ 1 MgSiO3[s]
+ 1 H2
+3 3
+ 1 MG(OH)2
+ 1 SIS
+ 1 H2O
+ 1 MgSiO3[s]
+ 1 H2S
+ 1 H2

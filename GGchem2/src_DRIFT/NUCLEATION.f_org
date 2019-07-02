@@ -1,0 +1,22 @@
+*********************************************************************
+      SUBROUTINE NUCLEATION(T,Jstern,Nstern)
+*********************************************************************
+      use drift_data,ONLY: NMOLE,nmol,cmol,J_is_zero
+      implicit none
+      real*8,intent(IN) :: T
+      real*8,intent(OUT):: Nstern,Jstern
+      real*8 :: nTiO2,SS
+      INTEGER :: stindex
+      INTEGER,save :: TiO2
+      logical,save :: firstCall=.true.
+*
+      if (firstCall) then
+        TiO2 = STINDEX(CMOL,NMOLE,'TIO2     ')
+        firstCall=.false.
+      endif    
+*
+      nTiO2 = nmol(TiO2)
+      CALL KLASS_NUK_TIO2(T,nTiO2,Jstern,Nstern,SS)
+      if (J_is_zero) Jstern=0.d0
+      RETURN 
+      END 

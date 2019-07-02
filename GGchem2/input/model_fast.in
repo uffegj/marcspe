@@ -1,0 +1,24 @@
+# selected elements
+H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el 
+
+# name of files with molecular kp-data
+dispol_fast.dat                ! dispol_file
+
+# abundance options 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
+3                     ! abund_pick
+
+# equilibrium condensation?
+.false.               ! model_eqcond
+
+# model options
+1                     ! model_dim  (0,1,2)
+.true.                ! model_pconst
+2898.3                ! Tmax [K]
+1897.3                ! Tmin [K]      (if model_dim>0)
+0.00051613            ! pmax [bar]    (if pconst=.true.)
+0.00051613            ! pmin [bar]
+1000                  ! Npoints      
+5                     ! NewBackIt  
+.true.                ! NewFullIt  
+100.0                 ! Tfast
+

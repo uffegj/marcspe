@@ -1,0 +1,1142 @@
+!*********************************************************************
+    subroutine SUBTRACT_DUST(Vs,eps)
+!*********************************************************************
+      use DustChemData, ONLY: NELEM,NDUST,NEPS,NMOLE,elcode,         &
+                            & dust_nel,dust_el,dust_nu,dust_vol,     &
+                            & nuc_nel,nuc_el,nuc_nu,cmol,            &
+                            & epsnull,C,Si,                          &
+                            & dust_nam,elnam,muH,pi
+      implicit none
+      real,intent(IN)  :: Vs(NDUST)      ! dust volumina [cm^3/g]
+      real,intent(OUT) :: eps(NEPS)      ! gas abundances 
+      real,save :: epnull(NEPS)
+      real :: nmono
+      integer :: i,s,el
+      logical,save :: firstCall=.true.
+
+      if (firstCall) then
+        epnull(1) = epsnull(C)  
+        epnull(2) = epsnull(Si)
+        firstCall=.false.
+      endif  
+      eps = epnull
+      do s=1,NDUST
+        nmono = Vs(s)/dust_vol(s)*muH    ! solid units/hydrogen nucleus 
+        do i=1,dust_nel(s)
+          el = elcode(dust_el(s,i))
+          eps(el) = eps(el) - nmono*dust_nu(s,i)
+          !write(*,*) s,nmono,el,dust_nu(s,i)
+        enddo
+      enddo
+      do el=1,NEPS
+        eps(el) = MIN(epnull(el),MAX(1.e-99*epnull(el),eps(el)))
+      enddo    
+    
+      RETURN
+    end subroutine SUBTRACT_DUST
+
+
+!************************************************************************
+    SUBROUTINE SMALL_CARBON_CHEM ( nHges, Tg, epsC, epsSi, &
+                                 & nat, nmol, raus )
+!************************************************************************
+!*                                                                      *
+!*  Aproximate carbon-rich gas phase chemistry                          *
+!*  ==========================================                          *
+!*  The routine calculates approximately the chemical equilibrium       *  
+!*  state for a neutral gas containing only H,He,C,N,O.                 *
+!*  The solution ansatz is fast but only approximate. A stepwise        *
+!*  solution of for the blocks H/H2, He, C/N/O is carried out, which    *
+!*  gives usually quite accurate results (error<10%) compared to        *
+!*  a full Newton-Raphson solution. However, the hirachical solution    *
+!*  requires solar-like abundances - so check it out.                   *
+!*                                                                      *
+!*  This particular version assumes a carbon-rich composition C/O>1,    *
+!*  but the results are also ok for C/O<=1.                             *
+!*                                                                      *
+!*  c Peter Woitke 2007, based on the experience of the Berlin          *
+!*                       dust group, in particular thanks to            *
+!*                       H.-P. Gail and C. Dominik                      *
+!*                                                                      *
+!*----------------------------------------------------------------------*
+!*                                                                      *
+!*     I N P U T:                                                       *
+!*     nHges  : hydrogen nuclei particle density [cm^-3]                *
+!*     Tg     : gas temperature                  [K]                    *
+!*     epsC, epsSi : gas element abundances      [-]                    *
+!*     raus   : want some outputs?                                      *
+!*                                                                      *
+!*----------------------------------------------------------------------*
+!*                                                                      *
+!*     O U T P U T :                                                    *
+!*     nat (36)  : atomic particle densities     [cm^-3]                *
+!*     nmol(155) : molecular particle densities  [cm^-3]                *
+!*                                                                      *
+!*----------------------------------------------------------------------*
+!*                                                                      *
+!*     D A T A - File :  dispol.dat required                            *
+!*                                                                      *
+!* ____________________________________________________________________ * 
+!* element: He  e-  H   C   N   O   Si  Mg  Al  Fe  S   Na  K   Ti  Ca  * 
+!* number : 1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  * 
+!* ____________________________________________________________________ *
+!*                                                                      *
+!************************************************************************
+      !use IFCORE
+      use DustChemData, ONLY: Nmole, nelem, epsnull, cmol
+      implicit none
+      real,intent(IN)    :: nHges,Tg,epsC,epsSi
+      real,intent(OUT)   :: nat(Nelem)
+      real,intent(OUT)   :: nmol(Nmole)
+      logical,intent(INOUT) :: raus
+      integer,parameter :: He=1,el=2,H=3,C=4,N=5,O=6,Si=7,Mg=8,Al=9
+      integer,parameter :: Fe=10,S=11,Na=12,K=13,Ti=14,Ca=15
+      integer,parameter :: ndim=15
+      integer,save      :: m_kind(Nmole,0:4),m_anz(Nmole,4)
+      integer,save      :: HII,CII,NII,OII,NaII,MgII,AlII,KII,TiII,SII
+      integer,save      :: SiII,FeII,CaII
+      integer,save      :: Al2O,AlH,AlO2H,AlOH,C3,C2,C2H,C2H2,CH4,CN,CO,CO2,CS
+      integer,save      :: FeS,H2,H2O,H2S,HCN,HS,MgH,MgO,MgOH,MgS,N2,NH3,O2
+      integer,save      :: OH,SO,SO2,Si2C,SiC,SiC2,SiH,SiH4,SiN,SiO,SiO2,SiS
+      integer,save      :: FeO,FeO2H2,TiO,TiO2,TiS,TiC,TiC2,MGO2H2,NAOH
+      integer,save      :: NA2O2H2,CaOH,CaO2H2,KOH,K2O2H2
+      integer,save      :: MyPE,MasterPE
+      logical,parameter :: nachit=.true.
+      character(len=10),save :: catm(ndim)
+      data catm/'He','e-','H','C','N','O','Si','Mg','Al','Fe','S','Na', &
+              &  'K','Ti','Ca'/
+      real,save      :: eps(ndim),pmono(ndim),a(Nmole,0:4)
+      real,parameter :: Tdispol=300.0
+      real,parameter :: bk=1.380662e-16, hplanck=6.626196e-27 
+      real,parameter :: eV=1.602e-12, me=9.109558e-28
+      real,parameter :: pi=3.141592653589793e0
+      logical,save   :: firstCall=.true.
+      real,save      :: g(Nmole)=0.0
+      real    :: th1,th2,th3,th4,kT,kT1
+      real    :: pHges,pHeges,pCges,pNges,pOges,pSiges,pMgges,pAlges
+      real    :: pFeges,pSges,pNages,pKges,pTiges,pCages
+      real    :: pH,pHe,pC,pN,pO,pSi,pMg,pAl,pFe,pS,pNa,pK,pTi,pCa,pel,pel1
+      real    :: a3,aa,bb,cc,dd,ee,ppp,qqq,pOalt,pCalt,pSialt,fak,delta
+      real    :: func(2),dfunc(2,2),dpp(2),pmol
+      real    :: FF(ndim),DF(ndim,ndim),dp(ndim)
+      real    :: f0,f1,f2,f3,fs,fff
+      integer :: i,j,pCpOit,pSi_it,it,m1,m2,l
+      integer*4 :: trapi
+      integer,external :: stindex 
+      character*1      :: char
+      logical,external :: IS_NAN
+!------------------------------------------------------------------------
+      real GK,VIETA    ! formular functions
+!------------------------------------------------------------------------
+      GK(i) = MIN(1.e+300, EXP( a(i,0) + a(i,1)*th1 + a(i,2)*th2     &
+            &                          + a(i,3)*th3 + a(i,4)*th4 ) )
+      VIETA(ppp,qqq) = qqq/(-ppp/2.0-sqrt(ppp**2/4.0-qqq))
+!------------------------------------------------------------------------
+
+      !trapi = FOR_SET_FPE(FPE_M_TRAP_DIV0 + &   ! division by 0
+      !                    FPE_M_TRAP_INV  + &   ! infinity
+      !                    FPE_M_TRAP_OVF)       ! overflow
+
+      if (firstCall) then        
+        MyPE     = 0
+        MasterPE = 0
+        !-------------------
+        ! initial abundances
+        !-------------------
+        eps(H)  = epsnull(1) 
+        eps(el) = 1.E-99
+        eps(He) = epsnull(2)
+        eps(C)  = epsnull(6)
+        eps(N)  = epsnull(7)
+        eps(O)  = epsnull(8)
+        eps(Na) = epsnull(11)
+        eps(Mg) = epsnull(12)
+        eps(Al) = epsnull(13)
+        eps(Si) = epsnull(14)
+        eps(S)  = epsnull(16)
+        eps(K)  = epsnull(19)
+        eps(Ca) = epsnull(20)
+        eps(Ti) = epsnull(22)
+        eps(Fe) = epsnull(26)
+        !------------------------------------------
+        ! Get the dissociation polynom coefficients
+        !------------------------------------------
+        if (MyPE.eq.MasterPE) then
+          write(*,*)
+	  write(*,*) 'SMALL_CHEM: Read dissociation polynomals from dispol.dat'
+        endif
+        open(unit=12, file='dispol.dat', status='old')
+        rewind(12)
+        do i = 1,Nmole
+          read(12,2001) cmol(i),m_kind(i,0),           &
+                        &      (m_kind(i,j),j=1,m_kind(i,0)), &
+                        &      (m_anz(i,j),j=1,m_kind(i,0))
+          read(12,2002) (a(i,j),j=0,4)
+ 2001     format(a10,10i3)
+ 2002     format(5e13.5)
+	enddo
+        close(12)
+        if (MyPE.eq.MasterPE) then
+          write(*,*) 'Found',i-1,'species from',Ndim,'elements.'
+          write(*,*)
+	endif
+        !----------------------------------------------
+        ! Get the indices of the molecules with stindex
+        !----------------------------------------------     
+        HII    = stindex(cmol,Nmole,'H+     ')
+        CII    = stindex(cmol,Nmole,'C+     ')
+        NII    = stindex(cmol,Nmole,'N+     ')
+        OII    = stindex(cmol,Nmole,'O+     ')
+        SII    = stindex(cmol,Nmole,'S+     ')
+        MgII   = stindex(cmol,Nmole,'MG+    ')
+        AlII   = stindex(cmol,Nmole,'AL+    ')
+        SiII   = stindex(cmol,Nmole,'SI+    ')
+        TiII   = stindex(cmol,Nmole,'TI+    ')
+        FeII   = stindex(cmol,Nmole,'FE+    ')
+        C3     = stindex(cmol,Nmole,'C3     ')
+        C2     = stindex(cmol,Nmole,'C2     ')
+        C2H    = stindex(cmol,Nmole,'C2H    ')
+        C2H2   = stindex(cmol,Nmole,'C2H2   ')
+        CH4    = stindex(cmol,Nmole,'CH4    ')
+        SiC    = stindex(cmol,Nmole,'SIC    ')
+        SiC2   = stindex(cmol,Nmole,'SIC2   ')
+        Si2C   = stindex(cmol,Nmole,'SI2C   ')
+        CS     = stindex(cmol,Nmole,'CS     ')
+        CN     = stindex(cmol,Nmole,'CN     ')
+        CO     = stindex(cmol,Nmole,'CO     ')
+        CO2    = stindex(cmol,Nmole,'CO2    ')
+        H2     = stindex(cmol,Nmole,'H2     ')
+        OH     = stindex(cmol,Nmole,'OH     ')
+        H2O    = stindex(cmol,Nmole,'H2O    ')
+        HCN    = stindex(cmol,Nmole,'HCN    ')
+        N2     = stindex(cmol,Nmole,'N2     ')
+        NH3    = stindex(cmol,Nmole,'NH3    ')
+        SiH    = stindex(cmol,Nmole,'SIH    ')
+        SiH4   = stindex(cmol,Nmole,'SIH4   ')
+        SiO    = stindex(cmol,Nmole,'SIO    ')
+        SiO2   = stindex(cmol,Nmole,'SIO2   ')
+        SiN    = stindex(cmol,Nmole,'SIN    ')
+        SiS    = stindex(cmol,Nmole,'SIS    ')
+        H2S    = stindex(cmol,Nmole,'H2S    ') 
+        HS     = stindex(cmol,Nmole,'HS     ')
+        SO     = stindex(cmol,Nmole,'SO     ')
+        SO2    = stindex(cmol,Nmole,'SO2    ')
+        MgO    = stindex(cmol,Nmole,'MGO    ')
+        MgOH   = stindex(cmol,Nmole,'MGOH   ')
+        MgO2H2 = stindex(cmol,Nmole,'MG(OH)2')
+        MgH    = stindex(cmol,Nmole,'MGH    ')
+        MgS    = stindex(cmol,Nmole,'MGS    ')
+        FeO    = stindex(cmol,Nmole,'FEO    ')
+        FeO2H2 = stindex(cmol,Nmole,'FE(OH)2')
+        AlH    = stindex(cmol,Nmole,'ALH    ')
+        AlOH   = stindex(cmol,Nmole,'ALOH   ')
+        AlO2H  = stindex(cmol,Nmole,'ALO2H  ')
+        Al2O   = stindex(cmol,Nmole,'AL2O   ')
+        TiS    = stindex(cmol,Nmole,'TIS    ')
+        TiO    = stindex(cmol,Nmole,'TIO    ')
+        TiO2   = stindex(cmol,Nmole,'TIO2   ')
+        firstCall = .false.
+     endif
+
+     !-----------------------------
+     ! disable too low temperatures
+     !-----------------------------
+     th1   = 5040.e0 / MAX(Tdispol,Tg)
+     th2   = th1*th1
+     th3   = th2*th1
+     th4   = th3*th1
+     kT    = bk * MAX(Tdispol,Tg)
+     kT1   = 1.e0/kT
+
+     eps(C)   = epsC
+     eps(Si)  = epsSi
+     nat(:)   = 0.0
+     nmol(:)  = 0.0
+     pmono(:) = eps(:)*nHges*kT
+
+     !--------------------------------
+     ! calculate equilibrium constants
+     !--------------------------------
+     g(HII)    = 0.0
+     g(OII)    = 0.0
+     g(CII)    = 0.0
+     g(NII)    = 0.0
+     g(SiII)   = 0.0
+     g(SII)    = 0.0
+     g(MgII)   = 0.0
+     g(FeII)   = 0.0
+     g(AlII)   = 0.0
+     g(TiII)   = 0.0
+     g(H2)     = GK( H2   )
+     g(CO)     = GK( CO   )
+     g(CO2)    = GK( CO2  )
+     g(C2)     = GK( C2   )
+     g(C3)     = GK( C3   )
+     g(C2H)    = GK( C2H  )
+     g(C2H2)   = GK( C2H2 )
+     g(CH4)    = GK( CH4  )
+     g(SiC)    = GK( SiC  )
+     g(SiC2)   = GK( SiC2 )
+     g(Si2C)   = GK( Si2C )
+     g(OH)     = GK( OH   )
+     g(H2O)    = GK( H2O  )
+     g(N2)     = GK( N2   )
+     g(CN)     = GK( CN   )
+     g(CS)     = GK( CS   )
+     g(HCN)    = GK( HCN  )
+     g(NH3)    = GK( NH3  )
+     g(SiH)    = GK( SiH  )
+     g(SiH4)   = GK( SiH4 )
+     g(SiO)    = GK( SiO  )
+     g(SiO2)   = GK( SiO2 )
+     g(SiN)    = GK( SiN  )
+     g(SiS)    = GK( SiS  )
+     g(H2S)    = GK( H2S  ) 
+     g(HS)     = GK( HS   )
+     g(SO)     = GK( SO   )
+     g(SO2)    = GK( SO2  )
+     !g(MgO)    = GK( MgO  )
+     !g(MgOH)   = GK( MgOH )
+     !g(MgO2H2) = GK(MgO2H2)
+     !g(MgH)    = GK( MgH  )
+     !g(MgS)    = GK( MgS  )
+     !g(FeO)    = gk( FeO  )
+     !g(FeO2H2) = gk(FeO2H2)
+     !g(AlH)    = gk( AlH  )
+     !g(AlOH)   = gk( AlOH )
+     !g(AlO2H)  = gk( AlO2H)
+     !g(Al2O)   = gk( Al2O )
+     !g(TiS)    = gk( TiS  )
+     !g(TiO)    = gk( TiO  )
+     !g(TiO2)   = gk( TiO2 )
+
+     !--------------------------
+     ! neutral gas assumed here!
+     !--------------------------
+     pel     = 1.e-99
+     pel1    = 1.e0/pel
+
+     !----------------------
+     ! equilibrium H, H+, H2
+     !----------------------
+     pHges    = nHges * eps(H) * kT
+     ppp      = ( 1.e0 + g(HII)*pel1 )  / (2.e0*g(H2))
+     qqq      = -pHges / (2.e0*g(H2))
+     pH       = vieta(ppp,qqq)
+     pmono(H) = pH
+     nat(1)   = pH * kT1
+     nmol(H2) = g(H2) * pH**2 * kT1
+
+     !-----------------------------
+     ! Helium is neutral and atomic
+     !-----------------------------
+     nat(2)    = nHges * eps(He) 
+     pmono(He) = nat(2)*kT 
+ 
+     pOges = eps(O) * nHges * kT
+     pCges = eps(C) * nHges * kT
+     if (pOges.gt.pCges) then
+       !---------------------------------------------------
+       ! preliminary equilibrium C, C+, O, O+, CO, H2O, CH4
+       !---------------------------------------------------
+       aa  = 1.0 + g(OII)*pel1 + pH**2*g(H2O)
+       bb  = 1.0 + g(CII)*pel1 + pH**4*g(CH4)
+       ppp = ( (pOges-pCges)*g(CO) + aa*bb ) / (g(CO)*bb)
+       qqq = -pCges*aa / (g(CO)*bb)
+       pC  = VIETA(ppp,qqq)
+       !--------------------------------------------
+       ! preliminary equilibrium O, O+, CO, H2O, CO2
+       !--------------------------------------------
+       aa  = 2.0*pC*g(CO2)
+       ppp = (1.0 + g(OII)*pel1 + pC*g(CO) + pH**2*g(H2O) ) / aa
+       qqq = -pOges/aa
+       pO  = VIETA(ppp,qqq)
+     else
+       !---------------------------------------------------
+       ! preliminary equilibrium C, C+, O, O+, CO, H2O, CH4
+       !---------------------------------------------------
+        aa  = 1.0 + g(OII)*pel1 + pH**2*g(H2O)
+        bb  = 1.0 + g(CII)*pel1 + pH**4*g(CH4)
+        ppp = ( (pCges-pOges)*g(CO) + aa*bb ) / (g(CO)*aa)
+        qqq = -pOges*bb / (g(CO)*aa)
+        pO  = VIETA(ppp,qqq)
+       !------------------------------------------------------
+       ! preliminary equilibrium C, C+, CO, CH4, C2, C2H, C2H2
+       !------------------------------------------------------
+        aa  = 2.0 * ( pH**2*g(C2H2) + pH*g(C2H) + g(C2) )
+        ppp = ( 1.0 + g(CII)*pel1 + pO*g(CO) + pH**4*g(CH4) ) / aa
+        qqq = -pCges/aa
+        pC  = VIETA(ppp,qqq)
+       !---------------------------------------------------
+       ! repeat preliminary equilibrium O, O+, CO, H2O, CO2
+       !---------------------------------------------------
+        aa  = 2.0*pC*g(CO2)
+        ppp = (1.0 + g(OII)*pel1 + pC*g(CO) + pH**2*g(H2O) ) / aa
+        qqq = -pOges/aa
+        pO  = VIETA(ppp,qqq)
+     endif  
+     !---------------------------------------------------------------
+     ! equilibrium C, C+, O, O+, CO, CO2, H2O, CH4, C2H2, C2H, C2, C3
+     !---------------------------------------------------------------
+     a3 = 3.0 * g(C3)
+     aa = 2.0 * ( pH**2*g(C2H2) + pH*g(C2H) + g(C2) )
+     bb = 1.0 + g(CII)*pel1 + pH**4*g(CH4)
+     cc = g(CO)
+     dd = g(CO2)
+     ee = 1.0 + g(OII)*pel1 + pH**2*g(H2O)
+     pCpOit = 0
+     do
+       func(1)    = pC**3*a3 + pC**2*aa + pC*bb + pC*pO*cc + pC*pO**2*dd &
+                  & - pCges
+       dfunc(1,1) = 3.0*pC**2*a3 + 2.0*pC*aa + bb + pO*cc + pO**2*dd 
+       dfunc(1,2) = pC*cc + 2.0*pC*pO*dd 
+       func(2)    = pO*ee + pC*pO*cc + 2.0*pC*pO**2*dd - pOges
+       dfunc(2,1) = pO*cc + 2.0*pO**2*dd 
+       dfunc(2,2) = ee + pC*cc + 4.0*pC*pO*dd 
+       call GAUSS(2,dfunc,dpp,func)
+       pCalt = pC
+       pOalt = pO
+       !fak = 2.0
+       fak = 1.0+exp(-0.15*MAX(0,pCpOit-10))
+       pC  = MAX(MIN(pC-dpp(1),pC*fak),pC/fak)
+       pO  = MAX(MIN(pO-dpp(2),pO*fak),pO/fak)
+       delta  = MAX(ABS(pCalt/pC-1.0),ABS(pOalt/pO-1.0))          
+       pCpOit = pCpOit + 1
+       if (raus.or.((pCpOit.gt.50).and.(delta.gt.1.e-8))) then
+         write(*,'(a16,i3,3(1pE11.4))') &
+         &    'pC/pO-Iteration:',pCpOit,pCalt/kT,pOalt/kT,delta
+       endif
+       if ((pCpOit.ge.70).or.(delta.lt.1.e-12)) exit
+     enddo
+     if ((pCpOit.ge.70).and.(delta.gt.1.e-8)) then
+        write(*,*) '*** pC/pO-Iteration failed in SMALL_CARBON_CHEM ***'
+        write(*,*) 'Tg, nHges, C/O=',Tg,nHges,epsC/eps(O)
+        stop
+     endif
+     pmono(C)   = pC
+     pmono(O)   = pO
+     nat(8)     = pO * kT1
+     nat(6)     = pC * kT1
+     nmol(CO)   = g(CO)   * pC * pO * kT1
+     nmol(CO2)  = g(CO2)  * pC * pO**2 * kT1
+     nmol(H2O)  = g(H2O)  * pH**2 * pO * kT1
+     nmol(C3)   = g(C3)   * pC**3 * kT1
+     nmol(C2)   = g(C2)   * pC**2 * kT1
+     nmol(C2H)  = g(C2H)  * pC**2 * pH * kT1
+     nmol(C2H2) = g(C2H2) * pC**2 * pH**2 * kT1
+     nmol(CH4)  = g(CH4)  * pC * pH**4 * kT1
+
+     !------------------------------------
+     ! equilibrium N, N+, N2, CN, HCN, NH3
+     !------------------------------------
+     pNges     = eps(N) * nHges * kT
+     ppp       = ( 1.0 + g(CN)*pC + g(HCN)*pC*pH             &
+             & + g(NH3)*pH**3 + g(NII)*pel1)/(2.e0*g(N2) )
+     qqq       = -pNges / (2.0*g(N2))
+     pN        = VIETA(ppp,qqq)
+     pmono(N)  = pN
+     nat(7)    = pN * kT1
+     nmol(N2)  = g(N2) * pN**2 * kT1
+     nmol(CN)  = g(CN) * pC * pN * kT1
+     nmol(HCN) = g(HCN) * pH * pC * pN * kT1
+     nmol(NH3) = g(NH3) * pN * pH**3 * kT1
+
+     !----------------------------------------------------------
+     ! prelim.eqil. Si,S,SiS,SiC,SiO,SiC2,SiH,SiH4,SiN,CS,HS,H2S
+     !----------------------------------------------------------
+     pSiges   = eps(Si) * nHges * kT
+     pSges    = eps( S) * nHges * kT
+     aa       = 1.D0 + pC*g(SiC) + pC**2*g(SiC2) + pH*g(SiH)        &
+            & + pH**4*g(SiH4) + pN*g(SiN) + pO*g(SiO) + g(SiII)/pel
+     bb       = 1.D0 + pC   *g(CS)   + pH*g(HS) + pH**2*g(H2S)      &
+            & + g(SII)/pel
+     ppp      = aa/g(SiS) + (pSiges-pSges)/bb
+     qqq      = -pSges * aa / bb / g(SiS)
+     pS       = VIETA(ppp,qqq)
+     pSi      = pSiges / ( aa + pS * g(SiS) )
+ 
+     !-------------------------------------------------------------
+     ! eqilibrium Si,S,SiS,SiC,SiO,Si2C,SiC2,SiH,SiH4,SiN,CS,HS,H2S
+     !-------------------------------------------------------------
+     f3 = 2.0*g(Si2C)*pC*g(SiS)
+     f2 = 2.0*bb*pc*g(Si2C)+aa*g(SiS)
+     f1 = aa*bb+g(SiS)*(pSges-pSiges)
+     f0 = -bb*pSiges
+     pSi_it = 0
+     do       
+       fff   = f3*pSi**3 + f2*pSi**2 + f1*pSi + f0
+       fs    = 3.0*f3*pSi**2 + 2.0*f2*pSi + f1
+       delta = fff/fs
+       fak   = 1.0+exp(-0.15*MAX(0,pSi_it-10))
+       pSialt = pSi
+       pSi    = MAX(MIN(pSi-delta,pSi*fak),pSi/fak)
+       delta  = ABS(pSialt/pSi-1.0)
+       pSi_it = pSi_it + 1
+       if (raus.or.((pSi_it.gt.50).and.(delta.gt.1.e-8))) then
+         write(*,'(a16,i3,3(1pE11.4))') &
+         &    'pSi-Iteration:',pSi_it,pSi/kT,delta
+       endif
+       if ((pSi_it.ge.70).or.(delta.lt.1.e-12)) exit
+     enddo
+     if ((pSi_it.ge.70).and.(delta.gt.1.e-8)) then
+       write(*,*) '*** pSi-Iteration failed in SMALL_CARBON_CHEM ***'
+       write(*,*) 'Tg, nHges, C/O=',Tg,nHges,eps(C)/eps(O)
+       stop
+     endif
+  
+     pS = pSges / ( bb + g(SiS)*pSi )
+     pmono(Si)  = pSi
+     pmono(S)   = pS
+     nat(14)    = pSi * kT1
+     nat(16)    = pS  * kT1
+     nmol(Si2C) = g(Si2C) * pSi**2 * pC    * kT1
+     nmol(SiC2) = g(SiC2) * pSi    * pC**2 * kT1
+     nmol(SiH)  = g(SiH)  * pSi    * pH    * kT1
+     nmol(CS)   = g(CS)   * pS     * pC    * kT1
+     nmol(HS)   = g(HS)   * pS     * pH    * kT1
+     nmol(H2S)  = g(H2S)  * pS     * pH**2 * kT1
+     nmol(SiO)  = g(SiO)  * pSi    * pO    * kT1
+     nmol(SiS)  = g(SiS)  * pSi    * pS    * kT1
+     nmol(SiC)  = g(SiC)  * pSi    * pC    * kT1
+     nmol(SiH)  = g(SiH)  * pSi    * pH    * kT1
+     nmol(SiH4) = g(SiH4) * pSi    * pH**4 * kT1
+     nmol(SiN)  = g(SiN)  * pSi    * pN    * kT1
+
+
+     if (nachit) then
+       ! Iteration nach Newton-Raphson
+       !===============================
+       it = 0
+       do
+         do i=1,ndim
+           FF(i) = nHges*eps(i)*kT - pmono(i)
+           do j=1,ndim
+	     DF(i,j) = 0.0
+           enddo
+	   DF(i,i) = -1.0
+         enddo	
+         do i=1,Nmole
+           pmol = g(i)
+           if (pmol.gt.0.0) then
+             do j=1,m_kind(i,0)
+  	       pmol = pmol * pmono(m_kind(i,j))**m_anz(i,j)
+             enddo
+  	     nmol(i) = pmol*kT1
+             do j=1,m_kind(i,0)
+	       m1     = m_kind(i,j) 
+               FF(m1) = FF(m1) - m_anz(i,j) * pmol
+               do l=1,m_kind(i,0)
+                 m2        = m_kind(i,l) 
+                 DF(m1,m2) = DF(m1,m2) - m_anz(i,j)*m_anz(i,l) &
+                         & * pmol / pmono(m_kind(i,l))
+  	       enddo	    
+	     enddo	    
+	   endif
+         enddo 
+         call GAUSS (ndim,DF,dp,FF)
+	 delta = 0.0 
+         fak = 1.0 + 4.0*EXP(-REAL(MAX(0,it-10))/10.0)
+         !if (it.eq.0) then
+         !  do i=1,ndim
+         !    write(*,2000) catm(i),pmono(i),-dp(i)/pmono(i)
+         !  enddo
+         !endif
+         do i=1,ndim
+	   delta    = MAX(delta, ABS(dp(i)/pmono(i)))
+           pmono(i) = MAX( MIN( pmono(i)-dp(i), &
+                    &           pmono(i)*fak ), pmono(i)/fak )
+         enddo
+         it = it + 1
+         if (it.gt.200) then
+           write(*,*) '*** keine Konvergenz in SMALL_CARBON_CHEM!'
+           write(*,*) nHges,Tg
+           stop
+         endif
+         if (raus) write(*,*) it,delta
+         !read(*,3000) char
+         if (delta.lt.1.E-12) exit
+       enddo  
+       if (raus) then
+         do i=1,ndim
+           write(*,2000) catm(i),pmono(i),-dp(i)/pmono(i)
+         enddo
+         write(*,*) it,' Iterationen'
+       endif  
+     endif      
+
+     if (raus) then
+       write(*,*)
+       write(*,1000) 'n<H>=',nHges,'Tg=',Tg
+       do i=1,Ndim
+         if (pmono(i).gt.0.0) then
+           write(*,1000) catm(i),eps(i),'n=',eps(i)*nHges,'nat=',pmono(i)*kT1
+         endif  
+       enddo
+       write(*,*)
+       do i=1,Nmole
+         if (nmol(i).gt.0.0) then
+           write(*,1010) cmol(i),nmol(i)
+         endif  
+       enddo
+     endif
+
+     RETURN
+1000 format(99(a8,1pE10.3,1x))
+1010 format(a8,': nmol=',1pE10.3)
+2000 format(A10,99(1pE15.6))
+3000 format(a1)
+   end SUBROUTINE SMALL_CARBON_CHEM
+
+
+!************************************************************************
+    integer function STINDEX(array,dim,string)
+!************************************************************************
+      implicit none
+      integer, intent(IN) :: dim
+      character(len=*),intent(IN),dimension(dim) :: array
+      character(len=*),intent(IN) :: string
+      integer :: i      
+      do i=1,dim
+        if ( array(i) .eq. string ) then
+          stindex = i
+          return
+        endif
+      enddo
+      write(*,*) 'Not found: ' ,string
+      stop
+    end function stindex
+
+
+!*********************************************************************
+      SUBROUTINE CARBON_NUCL(T,nC1,nC2,nC2H,nC2H2,nC3,Jst,Nst,SS)
+!*********************************************************************
+!*****                                                           *****
+!*****  berechnet die Kohlenstoff-Keimbildungsrate               *****
+!*****  mit Hilfe von klassischer Nukleationstheorie.            *****
+!*****                                                           *****
+!*****  EINGABE:   T = Gastemperatur [K]                         *****
+!*****           nC1 = Teilchendichte des Monomers C1 [cm^-3]    *****
+!*****           nC2 = Teilchendichte des Dimers   C2 [cm^-3]    *****
+!*****           nC3 = Teilchendichte des Trimers  C3 [cm^-3]    *****
+!*****                                                           *****
+!*****  AUSGABE: Jst = Keimbildungsrate [cm^-3 s^-1]             *****
+!*****           Nst = Groesse des kritischen Clusters           *****
+!*****            SS = Uebersaettigungsverhaeltnis               *****
+!*****                                                           *****
+!*********************************************************************
+      implicit none
+      real,intent(IN)  :: T,nC1,nC2,nC2H,nC2H2,nC3
+      real,intent(OUT) :: Jst,Nst
+      real,parameter   :: bk=1.380662e-16, hplanck=6.626196e-27 
+      real,parameter   :: eV=1.602e-12, me=9.109558e-28
+      real,parameter   :: pi=3.141592653589793e0, amu=1.66055e-24
+      real,parameter   :: mH=1.008, mC=12.01
+      real,parameter   :: mC1=mC, mC2=2.0*mC, mC3=3.0*mC
+      real,parameter   :: mC2H=2.0*mC+mH, mC2H2=2.0*mC+2.0*mH
+      real,parameter   :: Tdispol=300.e0
+     !--------------------------------------------------------------
+     !***  Materialkonstanten von Graphit:                       ***
+     !***  sigma = Oberflaechenspannung in erg/cm^2              ***
+     !***  Nl = Clustergroesse, bei der sich Theta halbiert      ***
+     !***  a0 = Monomerradius in cm                              ***
+     !***  f0 = 4*pi*a0^2 Monomeroberflaeche in cm^2             ***
+     !***  alf1,alf2,alf3 = Sticking-coefficients fuer C1,C2,C3  ***
+     !***    ((((( nach GAIL:   sigma=1400   Nl=5 )))))          ***
+     !-------------------------------------------------------------- 
+     !real,parameter :: sigma=2500.e0, Nl=30.e0
+      real,parameter :: sigma=1400.e0, Nl=5.e0
+      real,parameter :: a0=1.28e-8, f0=2.07e-15
+      real,parameter :: alf1=0.37e0, alf2=0.34e0, alf3=0.08e0
+      real :: Tvar,SS,th,ex,psat,slog,xx
+      real :: thetun,thetaN,x0,x1,x2,x3,dgdn,fst
+      real :: zeldof,vth,beta,betaN,Ast
+
+     !---------------------------------------------------------
+     !***  Dampfdruck von C1 (Gas) ueber Graphit (fest)     ***
+     !***  pvap:  eigener Fit an Janaf(1985)                ***
+     !---------------------------------------------------------
+      Tvar = MAX(Tdispol,T)
+#ifdef GAIL_DAMPF
+      xx   = 5040.0/Tvar
+      ex   = 3.24595E+01 - 1.68624E+01*xx    - 5.17205E-02*xx**2 &
+                         + 3.99686E-03*xx**3 - 1.00638E-04*xx**4
+      psat = EXP(ex)
+#else
+      ex   = +1.01428e+06/Tvar -7.23043e+05 +1.63039e+02*Tvar  &
+           & -1.75890e-03*Tvar**2 +9.97416e-08*Tvar**3
+      psat = 1.e+6*EXP(ex/(8.31441e0*Tvar))
+#endif
+      SS   = nC1*bk*Tvar/psat
+      slog = LOG(SS)
+      if (SS.le.1.e0) then
+        Jst = 0.e+0
+        Nst = 0.e+0
+        goto 500
+      endif
+
+     !---------------------------------------------------------------
+     !***  Groesse des krit. Clusters nach dem Troepfchenmodel    ***
+     !---------------------------------------------------------------
+      thetun = f0*sigma/bk
+      x0     = 2.e0*thetun/(3.e0*Tvar*slog)
+      x1     = Nl**(1.e0/3.e0)
+      x2     = x1/x0
+      x3     = 0.5e0*(1.e0+SQRT(1.e0+2.e0*x2)) - x2
+      Nst    = 1.e0 + (x0*x3)**3 
+      if (Nst.le.1.e0) Nst=1.000000001e0
+
+     !------------------------------------------------
+     !***  Teilchenhaeufigkeit des krit. Clusters  ***
+     !------------------------------------------------
+      x0     = x0*slog
+      x2     = (Nst-1.e0)**(1.e0/3.e0) + x1
+      x3     = 1.e0/(Nst-1.e0)**(2.e0/3.e0)
+      dgdn   = x0*x3* ( 1.e0/x2**2 + x1/x2**3 ) / 3.e0
+      zeldof = SQRT(dgdn/(2.e0*pi))
+      thetaN = thetun/(1.e0+(Nl/(Nst-1.e0))**(1.e0/3.e0))
+      x1     = (Nst-1.e0)*slog - (thetaN/Tvar)*(Nst-1.e0)**(2.e0/3.e0)
+      if (x1.lt.-300.0) then
+        Jst = 0.e+0
+        Nst = 0.e+0
+        goto 500
+      endif
+      fst = nc1*EXP(x1)
+
+     !----------------------------------
+     !***  Wachstumsgeschwindigkeit  ***
+     !----------------------------------
+      vth  = SQRT(bk*T/(2.e0*pi*amu))
+#ifdef CHILD_NUCL
+      beta = vth*( 1.0*alf1*nC1/SQRT(mC1)              &
+           &     + 2.0*alf2*SQRT(2.0)*2.0              &
+           &     * ( nC2  /SQRT(mC2)                   &
+           &       + nC2H /SQRT(mC2H)                  &
+           &       + nC2H2/SQRT(mC2H2) ) )
+#else
+      beta = vth*( 1.0*alf1*nC1  /SQRT(mC1)            &
+           &      +2.0*alf2*nC2  /SQRT(mC2)            &
+           &      +2.0*alf2*nC2H /SQRT(mC2H)           &
+           &      +2.0*alf2*nC2H2/SQRT(mC2H2)          &
+           &      +3.0*alf3*nC3  /SQRT(mC3) )
+#endif
+      Ast = f0*Nst**(2.e0/3.e0)
+
+      !--------------------------
+      !***  Keimbildungsrate  ***
+      !--------------------------
+      Jst = fst*beta*Ast*zeldof
+
+  500 continue
+      RETURN
+      end
+
+
+
+!*********************************************************************
+    REAL FUNCTION JEVAP(chi,Vlow,L0,L1,L2,L3)
+!*********************************************************************
+!***  Approximate evaporation rate Jev at Vlow [cm^-3/s].          ***
+!***  The idea is to choose Jev such that all (some) dust moments  ***
+!***  become zero after the same evaporation time t, if chi stays  ***
+!***  constant.                                                    ***
+!*********************************************************************
+      implicit none
+      real,intent(IN) :: chi,Vlow,L0,L1,L2,L3
+      real,save :: a
+      real :: t,dt,func,dfunc,c0,c1,c2,c3,A0,A1,A2
+      integer :: it
+      logical,save :: firstCall=.true.
+      
+      if (firstCall) then
+        a = Vlow**(1.0/3.0)  
+        firstCall = .false.
+      endif  
+      
+      JEVAP = 0.0
+      RETURN
+      if (L0.le.0.0) RETURN
+      if ((L1.le.a*L0).or.(L2.le.a*L1).or.(L3.le.a*L2)) then
+         write(*,*) "unphysical moments in JEVAP" 
+         !write(*,*) L0,L1,L2,L3
+         !stop
+         RETURN
+      endif
+
+      !--- L0(t)=0 and L1(t)=0 ---
+      !t = 6.0*(a-L1/L0)  
+      !write(*,*) t/chi,-chi*L0/t
+      !t = t/chi  
+      !JEVAP = -L0/t
+
+      !--- L0(t)=0 and L3(t)=0 ---
+      c0 = 36.0*L3 - 36.0*a**3*L0 
+      c1 = 36.0*L2 - 18.0*a**2*L0
+      c2 = 12.0*L1 - 4.0*a*L0 
+      c3 = L0
+      t  = 6.0*(a-L1/L0)  
+      t  = t*3.0
+      do it=1,100          
+        func  = c0 + c1*t + c2*t**2 + c3*t**3
+        dfunc = c1 + c2*2.0*t + c3*3.0*t**2
+        dt = -func/dfunc
+        !write(*,*) it,t,dt,func
+        t  = t+dt
+        if (ABS(dt).lt.1.e-13*ABS(t)) exit
+      enddo  
+      t = t/chi  
+      JEVAP = -L0/t
+
+      !--- L0(t)=0 and L3(t)=0 ---
+      !c0 = -540.0*a**3*L0 + 1620.0*a**2*L1 - 1620.0*a*L2 + 540.0*L3 
+      !c1 = +270.0*a**2*L0 + 270.0*L2 - 540.0*a*L1
+      !c2 = +36.0*L1 - 36.0*a*L0
+      !c3 = L0
+      !A0 =  -9 * (-12*chi*t*a*L0 + chi**2*t**2*L0 + 12*chi*t*L1 &
+      !   &        +30*L2 + 30*a**2*L0 -  60*a*L1) / chi**3 / t**3
+      !A1 =  36 * (-16*chi*t*a*L0 + chi**2*t**2*L0 + 16*chi*t*L1 &
+      !   &            +45*L2 + 45*a**2*L0 -  90*a*L1) / chi**3 / t**4
+      !A2 = -30 * (-18*chi*t*a*L0 + chi**2*t**2*L0 + 18*chi*t*L1 &
+      !   &          +54*L2 + 54*a**2*L0 - 108*a*L1) / chi**3 / t**5
+      !JEVAP = -A0
+
+      if ((t.lt.0.0).or.(JEVAP.gt.0.0)) then
+        write(*,*) "cj=",c0,c1,c2,c3
+        !write(*,*) "Aj=",A0,A1,A2 
+        write(*,*) "it,t,Jev=",it,t,JEVAP
+      endif    
+
+    end function JEVAP
+
+
+!*********************************************************************
+    SUBROUTINE SUPERSAT (T,nat,nmol,Sat)
+!*********************************************************************
+!***                                                               ***
+!***   INPUT:     T = temperature[K]                               ***
+!***          nat() = atomic particle densities at T [cm^-3]       ***
+!***         nmol() = molecular particle densities at T [cm^-3]    ***
+!***  OUTPUT: Sat() = supersaturation ratios                       ***
+!***                                                               ***
+!*********************************************************************  
+      use DustChemData, ONLY: NMOLE,NELEM,NDUST,elnr,elcode,cmol,C, &
+                         &    dust_nel,dust_el,dust_nu,dust_nam,dust_Vol 
+      implicit none
+      real,INTENT(IN)  :: T,nat(NELEM),nmol(NMOLE)
+      real,intent(OUT) :: Sat(NDUST)
+      real, parameter  :: bk=1.380662e-16, atm=1.013e+6, rgas=8.31434
+      real, parameter  :: bar=1.e+6, cal=4.184
+      real             :: TT, kT, pst, psat, dG, lbruch, term
+      real             :: ex
+      character(len=10),save  :: dnam(NDUST)
+      integer,save     :: SiC,dind(NDUST)
+      integer          :: i,j,el,stindex
+      logical,external :: IS_NAN
+      logical,save     :: firstCall=.true.,found
+
+      if (firstCall) then
+        dnam(1) = "C[s]"
+        dnam(2) = "SiC[s]"
+        do i=1,NDUST
+          found = .false.
+          do j=1,NDUST
+            if (dnam(i).eq.dust_nam(j)) then
+              found = .true.
+              dind(i) = j
+            endif
+          enddo
+          if (.not.found) then
+            write(*,*) "*** SUPERSAT: dust ",dnam(i)," not found."
+            stop
+          endif  
+        enddo
+        firstCall = .false.
+      endif   
+
+      TT = MAX(T,300.0)
+      kT = bk*TT
+      !---------------------------------------
+      !***  C[s]: eigener Fit 500-2500K ***
+      !---------------------------------------
+      i = dind(1)
+#ifdef GAIL_DAMPF
+      xx   = 5040.0/TT
+      ex   = 3.24595E+01       &
+     &     - 1.68624E+01*xx    &
+     &     - 5.17205E-02*xx**2 &
+     &     + 3.99686E-03*xx**3 &
+     &     - 1.00638E-04*xx**4
+      psat = EXP(ex)
+#else
+      ex   = 1.01428e+06/TT    &
+     &     - 7.23043e+05       &
+     &     + 1.63039e+02*TT    &
+     &     - 1.75890e-03*TT**2 &
+     &     + 9.97416e-08*TT**3
+      psat = 1.e+6*EXP(ex/(rgas*TT))
+#endif
+      Sat(i) = nat(C)*kT/psat
+      !write(*,*) dust_nam(i),TT,nHges,psat,Sat(i)
+
+      !----------------------------------------
+      !***  SiC[s]: eigener Fit nach JANAF  ***
+      !----------------------------------------
+      i = dind(2)
+      pst = bar
+      dG  = 6.73337E+5/TT     &
+        &  -1.24381E+6         &
+        &  +3.21779E+2*TT     &
+        &  -4.54405E-3*TT**2  &
+        &  +2.69711E-7*TT**3  
+      dG = dG/(rgas*TT)
+      lbruch = 0.0
+      do j=1,dust_nel(i)
+        el     = dust_el(i,j)
+        term   = nat(el)*kT/pst
+        lbruch = lbruch + LOG(term)*dust_nu(i,j)
+      enddo
+      Sat(i) = EXP(lbruch-dG)
+      !write(*,*) dust_nam(i),dG,lbruch,Sat(i)
+
+      do i=1,NDUST
+        Sat(i) = MAX(1.e-99,Sat(i))
+      enddo  
+
+      RETURN 
+    end SUBROUTINE SUPERSAT
+
+
+!*********************************************************************
+    SUBROUTINE CHI_NETTO ( nH,Tg,Td,eps,Vs,natTg,nmolTg,Sat, &
+                         & chi,chinet,raus )
+!*********************************************************************
+!*****                                                           *****
+!*****  berechnet die effektive Wachstumszeitskalen              *****
+!*****                                                           *****
+!*****  EINGABE:   nH = total H nuclei density [cm^-3]           *****
+!*****             Tg = Gastemperatur [K]                        *****
+!*****             Td = Staubtemperatur [K]                      *****
+!*****          eps() = element abundances                       *****
+!*****           Vs() = fractional dust volumes                  *****
+!*****          natTg = atomic densities [cm^-3] at Tg           *****
+!*****         nmolTg = molecular densities [cm^-3] at Tg        *****
+!*****           raus = want some output?                        *****
+!*****                                                           *****
+!*****  AUSGABE: chi() = growth velocities of solids [cm/s]      *****
+!*****          chinet = netto growth vel. [cm/s]                *****
+!*****                                                           *****
+!*********************************************************************
+      use Nature,ONLY: bk,hplanck
+      use DustChemData,ONLY: NELEM,NEPS,NMOLE,NDUST,NSPECIES,NREAC, &
+                            & spnr, spmass, epsnull, dust_vol, pi, &
+                            & reac_sp, reac_nu, neduct, nprod, keysp, &
+                            & cmol,C,dust_nam,spnam
+      implicit none
+      real,intent(IN)    :: nH,Tg,Td,natTg(NELEM),nmolTg(NMOLE)
+      real,intent(IN)    :: eps(NEPS),Vs(NDUST)
+      real,intent(OUT)   :: chi(NDUST),Sat(NDUST),chinet
+      logical,intent(IN) :: raus
+      integer,save :: rTyp(NREAC)
+      integer :: i,j,sp,r,dustnr,stindex,forw,back
+      real    :: natTd(NELEM),nmolTd(NMOLE)
+      real    :: nspTg(NSPECIES),nspTd(NSPECIES)
+      real    :: rate,Vtot,Sr,vrel,dchi,stoi,rat2,mr,eq_fak,btherm
+      real,save :: alpha,Afak
+      real,parameter :: Tdispol=300.e0
+      logical,save :: first_call=.true.
+      logical :: IS_NAN
+
+      if (first_call) then
+        do r=1,NREAC
+          if     ((neduct(r).eq.1).and.(nprod(r).eq.1)) then
+            rTyp(r) = 1
+          elseif ((neduct(r).eq.1).and.(nprod(r).eq.2)) then          
+            rTyp(r) = 2 
+          else
+            rTyp(r) = 3
+          endif
+        enddo
+        alpha = 1.0
+        Afak  = (36.0*pi)**(1.0/3.0)
+        first_call=.false.
+      endif
+
+!     -------------------------------------
+!     ***  calculate chemistry at T=Td  ***
+!     -------------------------------------
+      call SMALL_CARBON_CHEM(nH,Td,eps(1),eps(2),natTd,nmolTd,.false.)
+
+!     --------------------------------------
+!     ***  calculate particle densities  ***
+!     --------------------------------------
+      do i=1,NSPECIES
+        j = spnr(i)
+        if (j.gt.1000) then
+          nspTg(i) = natTg(j-1000)
+          nspTd(i) = natTd(j-1000)
+        else
+          nspTg(i) = nmolTg(j)
+          nspTd(i) = nmolTd(j)
+        endif
+        !write(*,'(2(i3),a10,2(1pE12.3))') i,j,spnam(i),nspTg(i),nspTd(i)
+      enddo
+
+!     ---------------------------------------
+!     ***  supersaturation ratios at T=Td ***
+!     ---------------------------------------
+      call SUPERSAT(Td,natTd,nmolTd,Sat)
+
+!     --------------------------------
+!     ***  growth and evaporation  ***
+!     --------------------------------
+      chinet = 0.0
+      chi(:) = 0.0
+      do r=1,NREAC
+        dustnr = reac_sp(r,1,2)
+        rate = 9.e+99
+        do j=1,neduct(r)
+          sp = reac_sp(r,j,1)
+          if (keysp(sp)) then
+            vrel = SQRT(bk*Tg/(2.0*pi*spmass(sp)))
+	    stoi = 1.0/REAL(reac_nu(r,j,1))
+	    rat2 = alpha*nspTg(sp)*vrel*stoi
+	    if (rat2.lt.rate) then
+	      rate = rat2                                ! reactions/cm^2/s
+	      mr = stoi*reac_nu(r,1,2)                   ! power for Sr
+              forw = sp                                  ! key species index 
+              back = 0                                   ! species index for  
+              if (nprod(r).gt.1) back=reac_sp(r,2,2)     ! backward reaction
+            endif  
+	  endif
+        enddo
+        if (rTyp(r).eq.1) then
+          btherm = SQRT(Tg/Td)*nspTg(forw)/nspTd(forw)
+        else if (rTyp(r).eq.2) then
+          btherm = nspTg(forw)/nspTd(forw) 
+          if (back.gt.0) btherm = btherm * nspTd(back)/nspTg(back)
+        else if (rTyp(r).eq.3) then
+          btherm = nspTg(forw)/nspTd(forw) 
+          if (back.gt.0) btherm = btherm * nspTd(back)/nspTg(back)
+        endif
+        Sr = btherm*Sat(dustnr)**mr                      ! reac. supersat.ratio
+        eq_fak = 1.0-Vs(dustnr)/Sr                       
+       !eq_fak = MAX(-1.e4,eq_fak)                       ! de-stiffen evap.
+        dchi = Afak*rate*eq_fak               &
+     &       *reac_nu(r,1,2)*dust_vol(dustnr)            ! cm^3/cm^2/s
+        chi(dustnr) = chi(dustnr) + dchi
+        chinet = chinet + dchi
+        !write(*,1000) r,spnam(forw),spnam(back),dust_nam(dustnr), &
+        !            & btherm,Sat(dustnr),Vs(dustnr),mr,Sr,rate
+      enddo
+
+      !if (IS_NAN(chinet).or.(ABS(chinet).gt.1.e+99)) then
+      !  write(*,*) '*** chinet is NaN'             
+      !  write(*,*) nH,Tg,Td
+      !  write(*,*) chinet
+      !  do i=1,NDUST
+      !    write(*,1010) dust_nam(i), Vs(i), Sat(i), chi(i) 
+      !  enddo  
+      !  write(*,*) nsp
+      !  stop
+      !endif   
+
+      !write(*,*) 'chi_netto:2 ',chi,chinet
+      return 
+1000  format(i3,3(1x,a7),99(1pE9.1))
+1010  format(a10,99(1pE12.3))
+    end SUBROUTINE CHI_NETTO
+
+#ifndef IBM
+!======================================================================
+LOGICAL FUNCTION IS_NAN(X)
+!======================================================================
+  IMPLICIT NONE
+  REAL*8 X,Y
+  INTEGER*4 I(2)
+  EQUIVALENCE(Y,I)
+  Y = X
+#ifdef IFORT
+  IS_NAN = ((I(2) .AND. Z'7ff00000') .EQ. Z'7ff00000') .AND.  &
+     &    (((I(2) .AND. Z'000fffff') .NE. Z'00000000') .OR.   &
+     &      (I(1) .NE. 0))
+#else
+  IS_NAN = ((I(1) .AND. Z'7ff00000') .EQ. Z'7ff00000') .AND.  &
+     &    (((I(1) .AND. Z'000fffff') .NE. Z'00000000') .OR.   &
+     &      (I(2) .NE. 0))
+#endif
+  RETURN
+END FUNCTION IS_NAN
+#endif
+
+      
+!**********************************************************************
+           SUBROUTINE GAUSS (N,a,x,b)
+!**********************************************************************
+!*****                                                            *****
+!*****   Diese Routine loesst ein lineares Gleichungssystem       *****
+!*****   der Form    (( a )) * ( x ) = ( b )     nach x auf.      *****
+!*****   Der Algorithmus funktioniert, indem die Matrix a         *****
+!*****   auf Dreiecksform gebracht wird.                          *****
+!*****                                                            *****
+!*****   EINGABE:  n = Dimension der Vektoren, der Matrix         *****
+!*****             a = (N x N)-Matrix                             *****
+!*****             b = (N)-Vektor                                 *****
+!*****   AUSGABE:  x = (N)-Vektor                                 *****
+!*****                                                            *****
+!**********************************************************************
+      implicit none
+      integer N,i,j,k,kmax
+      real*8  a(N,N),x(N),b(N),c,amax
+      integer piv(N),istat
+      save
+
+      do 500 i=1,N-1
+       !------------------------------------------
+       !***  MAX-Zeilentausch der i-ten Zeile  ***      
+       !------------------------------------------
+        kmax = i
+        amax = ABS(a(i,i))
+        do 200 k=i+1,N
+          if ( ABS(a(k,i)) .gt. amax ) then
+            kmax = k
+            amax = ABS(a(k,i))
+          endif
+  200   continue
+        if (kmax.ne.i) then
+          do 210 j=1,N
+            c         = a(i,j)
+            a(i,j)    = a(kmax,j)
+            a(kmax,j) = c 
+  210     continue
+          c       = b(i)
+          b(i)    = b(kmax)
+          b(kmax) = c 
+        endif
+
+       !---------------------------------
+       !***  bringe auf Dreiecksform  ***
+       !---------------------------------
+        do 310 k=i+1,N
+          c = a(k,i) / a(i,i)
+          a(k,i) = 0.e0
+          do 300 j=i+1,N
+            a(k,j) = a(k,j) - c * a(i,j)
+  300     continue        
+          b(k) = b(k) - c * b(i)
+  310   continue
+  500 continue
+
+     !--------------------------
+     !***  loese nach x auf  ***
+     !--------------------------
+      do 610 i=N,1,-1
+        c = 0.e0
+        if (i.lt.N) then
+          do 600 j=i+1,N
+            c = c + a(i,j) * x(j)
+  600     continue
+        end if
+        x(i) = (b(i) - c) / a(i,i)
+  610 continue
+
+      RETURN
+      end

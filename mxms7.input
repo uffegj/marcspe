@@ -1,7 +1,7 @@
 ITEMAX=24      NPRINT=  0     NEWMOD=  0     NOARCH=  0     JONTYP=3       IDUST =0
 JUMP  =  4     OS/ODF=OS      MOLOLD=  1     NLTE  =  0     PP/SPH=PP
-TEFF  =2300.0  GRAV  =4.5     MODEL =                        M/MSN=0.1
-NOCONV= 30     XMAX  =1.0E+08 TAUM  =300.0   FACPLY=1.0     METBL =  0
+TEFF  =2200.0  GRAV  =4.5     MODEL =                        M/MSN=0.1
+NOCONV= 10     XMAX  =1.0E+08 TAUM  =300.0   FACPLY=1.0     METBL =  0
 ILINE =  1     AMLOSS=1.5E-08 MOLTSJ=  1     LINCIA=  0     ISPEC =  1
 TDIAM1=1500.0  TDIAM2=2000.0  FDIAM1=0.00    FDIAM2=0.00
 TC2H21=1500.0  TC2H22=2000.0  FC2H21=1.00    FC2H22=1.00

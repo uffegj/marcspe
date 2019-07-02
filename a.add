@@ -2,14 +2,5 @@
  
  Iteration #            1 started
  Total time spent:  0:00:00
- Max corr. to T wanted was   0.9 K for iteration 1
- Max corr. to T wanted for kort=1 was   0.9
- 
- Iteration #            2 started
- Total time spent:  0:00:42
- Max corr. to T wanted was   0.5 K for iteration 2
- Max corr. to T wanted for kort=1 was   0.5
- Total time spent:  0:01:48
- 
- Successful termination of execution!
- 
+ Max corr. to T wanted was  -85.6 K for iteration 1
+ Maximum correction applied kpp was  85.6 for applied kort = 5

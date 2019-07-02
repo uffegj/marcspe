@@ -19,13 +19,15 @@ mkdir $TMPDIR
 cp -r ./* $TMPDIR/.
 cd $TMPDIR 
 
-cp mxms7marcs1.input mxms7.input
-cp $CWD/exo/t22g45j4.arciv  arcivaaa.dat
-./GGchem/marcs_test1
-mv mxmodel.dat $CWD/exo/t22g45j4x.dat
-mv arcivaab.dat $CWD/exo/t22g45j4x.arciv
+cp $CWD/mxms7marcs1.input mxms7.input
+cp $CWD/exo/t145g45j4GGPeK23.arciv  arcivaaa.dat
+./GGchem/marcs_test2
+mv mxmodel.dat $CWD/exo/t1425g45j4GGPeK23.dat
+mv arcivaab.dat $CWD/exo/t1425g45j4GGPeK23.arciv
 mv mxms7.output $CWD/mxms7.output
 mv fort.66 $CWD/fort.66
+mv ppel_before.dat $CWD/.
+mv ppel_after.dat $CWD/.
 
 #mv fort.79 op.dat
 rm spectrum.dat
